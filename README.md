@@ -1,76 +1,107 @@
-# Cursor Rules Sync
+# Cursor Rules CLI
 
-A global CLI tool to sync `.cursor` rules and commands from a centralized GitHub repository to any Shopify theme project.
+[![npm version](https://img.shields.io/npm/v/cursor-rules-cli.svg)](https://www.npmjs.com/package/cursor-rules-cli)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## 🚀 Features
+A powerful CLI tool to sync [Cursor editor](https://cursor.sh) rules and commands from a centralized GitHub repository to any project. Perfect for teams and individuals who want to maintain consistent coding standards and AI assistant configurations across multiple projects.
 
-- **Sync** rules from repo to any project
-- **Push** local changes back to the repository
-- **Status** check to see what's different
-- **Diff** view for individual files
-- **Auto-preserve** project-specific files (files starting with `project-`)
+## Features
 
-## 📦 Setup
+- 🔄 **Sync** rules from repository to any project
+- 📤 **Push** local changes back to the repository
+- 📊 **Status** check to see what's different
+- 🔍 **Diff** view for individual files
+- ⚙️ **Configuration** management via config files
+- 🛡️ **Auto-preserve** project-specific files
+- 🚀 **Dry-run** mode to preview changes
+- 📝 **Verbose** output for debugging
 
-### Install globally
+## Installation
 
-From this directory, run:
+### Via npm (Recommended)
 
 ```bash
-npm install -g .
+npm install -g cursor-rules-cli
 ```
 
-Or install from GitHub directly:
+### Via GitHub
 
 ```bash
 npm install -g git+https://github.com/eyyMinda/Cursor-Rules.git
 ```
 
-## 🎯 Commands
+## Quick Start
 
-### `cursor-sync`
+1. **Sync rules to your project:**
+
+   ```bash
+   crules sync
+   ```
+
+2. **Check what's different:**
+
+   ```bash
+   crules status
+   ```
+
+3. **Push your changes back:**
+   ```bash
+   crules push
+   ```
+
+## Commands
+
+### `crules sync`
 
 Sync rules from the repository to your current project.
 
 ```bash
-cursor-sync
+crules sync [options]
 ```
+
+**Options:**
+
+- `-v, --verbose` - Show detailed output
+- `--dry-run` - Preview changes without applying them
 
 **What it does:**
 
 - Updates the cached repository
 - Copies `.cursor` folder to your project
-- Preserves project-specific files (files starting with `project-`)
+- Preserves project-specific files (files matching the configured pattern)
 
-### `cursor-push` ⭐
+### `crules push`
 
 Push your local changes back to the repository.
 
 ```bash
-cursor-push
+crules push [options]
 ```
+
+**Options:**
+
+- `-v, --verbose` - Show detailed output
+- `--dry-run` - Preview what would be pushed
+- `-f, --force` - Skip confirmation prompts
 
 **What it does:**
 
 - Shows what files were added/modified/deleted
 - Optionally shows detailed diff
-- Prompts for confirmation
+- Prompts for confirmation (unless `--force`)
 - Commits and pushes changes to GitHub
 
-**Example workflow:**
-
-1. Make changes to rules in your project
-2. Run `cursor-push` to review changes
-3. Confirm to push updates to the repo
-4. Other projects can now `cursor-sync` to get your updates
-
-### `cursor-status`
+### `crules status`
 
 Check what's different between your project and the repository.
 
 ```bash
-cursor-status
+crules status [options]
 ```
+
+**Options:**
+
+- `-v, --verbose` - Show detailed output
 
 **What it shows:**
 
@@ -79,29 +110,86 @@ cursor-status
 - Deleted files (in repo but not in project)
 - Synced files count
 
-### `cursor-diff`
+### `crules diff <file>`
 
 View detailed diff for a specific file.
 
 ```bash
-cursor-diff <file-path>
+crules diff <file-path> [options]
 ```
+
+**Options:**
+
+- `-v, --verbose` - Show unchanged lines
 
 **Example:**
 
 ```bash
-cursor-diff rules/shopify-reusable-snippets.mdc
+crules diff rules/shopify-reusable-snippets.mdc
 ```
 
-## 📁 Project-Specific Files
+### `crules config`
 
-Files starting with `project-` in `.cursor/rules/` or `.cursor/commands/` will be **preserved** during sync and **ignored** during push. For example:
+Manage configuration settings.
+
+```bash
+crules config [get|set] [key] [value] [options]
+```
+
+**Options:**
+
+- `-g, --global` - Use global config file (`~/.cursor-rules.json`)
+
+**Examples:**
+
+```bash
+# Show all configuration
+crules config get
+
+# Get specific value
+crules config get repository
+
+# Set a value (local config)
+crules config set repository https://github.com/user/repo.git
+
+# Set a value (global config)
+crules config set repository https://github.com/user/repo.git --global
+```
+
+## Configuration
+
+Configuration can be set globally (`~/.cursor-rules.json`) or per-project (`.cursor-rules.json` in project root). Local config overrides global config.
+
+### Configuration Options
+
+```json
+{
+  "repository": "https://github.com/username/cursor-rules.git",
+  "cacheDir": "~/.cursor-rules-cache",
+  "projectSpecificPattern": "^project-",
+  "commitMessage": "Update cursor rules: {summary}"
+}
+```
+
+- **repository**: Git repository URL containing your `.cursor` folder
+- **cacheDir**: Local directory to cache the repository (supports `~` expansion)
+- **projectSpecificPattern**: Regex pattern to identify project-specific files
+- **commitMessage**: Commit message template (use `{summary}` placeholder)
+
+### Project-Specific Files
+
+Files matching the `projectSpecificPattern` (default: `^project-`) are:
+
+- ✅ **Preserved** during sync (not overwritten)
+- 🚫 **Ignored** during push (not pushed to repository)
+
+**Example:**
 
 - `project-7879-specific.mdc` ✅ Preserved (project-specific)
 - `project-store-xyz.mdc` ✅ Preserved (project-specific)
 - `shopify-reusable-snippets.mdc` ❌ Synced from repo (shared)
 
-## 🔄 Typical Workflow
+## Typical Workflow
 
 ### Working on rules in a project:
 
@@ -110,109 +198,104 @@ Files starting with `project-` in `.cursor/rules/` or `.cursor/commands/` will b
 # Edit .cursor/rules/some-rule.mdc
 
 # 2. Check what changed
-cursor-status
+crules status
 
 # 3. Review detailed diff (optional)
-cursor-diff rules/some-rule.mdc
+crules diff rules/some-rule.mdc
 
 # 4. Push changes to repository
-cursor-push
+crules push
 ```
 
 ### Getting latest rules in a project:
 
 ```bash
 # Just sync from repo
-cursor-sync
+crules sync
 ```
 
-## 💡 Best Practices
-
-1. **Always check status before pushing**: Run `cursor-status` first
-2. **Review diffs**: Use `cursor-diff` to see exactly what changed
-3. **Commit often**: Push changes regularly so other projects stay updated
-4. **Use project-specific files**: For store-specific rules, use `project-` prefix
-5. **Sync regularly**: Run `cursor-sync` when starting work on a project
-
-## Manual Setup (Alternative)
-
-If you prefer not to use npm, you can create a simple script:
-
-### Windows (PowerShell)
-
-Create `cursor-sync.ps1` in a directory in your PATH:
-
-```powershell
-# cursor-sync.ps1
-$repoUrl = "https://github.com/eyyMinda/Cursor-Rules.git"
-$cacheDir = "$env:USERPROFILE\.cursor-rules-cache"
-$currentDir = Get-Location
-
-if (-not (Test-Path $cacheDir)) {
-    git clone $repoUrl $cacheDir
-} else {
-    Push-Location $cacheDir
-    git pull
-    Pop-Location
-}
-
-# Backup project-specific files
-$projectFiles = @()
-if (Test-Path ".cursor\rules") {
-    $projectFiles += Get-ChildItem ".cursor\rules\project-*" -ErrorAction SilentlyContinue
-}
-if (Test-Path ".cursor\commands") {
-    $projectFiles += Get-ChildItem ".cursor\commands\project-*" -ErrorAction SilentlyContinue
-}
-
-# Copy .cursor folder
-Copy-Item "$cacheDir\.cursor" -Destination ".cursor" -Recurse -Force
-
-# Restore project-specific files
-foreach ($file in $projectFiles) {
-    Copy-Item $file.FullName -Destination ".cursor\$($file.Directory.Name)\$($file.Name)" -Force
-}
-
-Write-Host "✅ Cursor Rules synced!"
-```
-
-### Linux/Mac (Bash)
-
-Create `cursor-sync.sh` in a directory in your PATH:
+### Setting up a new project:
 
 ```bash
-#!/bin/bash
-# cursor-sync.sh
+# 1. Configure repository (if different from default)
+crules config set repository https://github.com/your-org/cursor-rules.git
 
-REPO_URL="https://github.com/eyyMinda/Cursor-Rules.git"
-CACHE_DIR="$HOME/.cursor-rules-cache"
-CURRENT_DIR=$(pwd)
-
-if [ ! -d "$CACHE_DIR" ]; then
-    git clone "$REPO_URL" "$CACHE_DIR"
-else
-    cd "$CACHE_DIR" && git pull && cd "$CURRENT_DIR"
-fi
-
-# Backup project-specific files
-mkdir -p .cursor/rules .cursor/commands
-PROJECT_FILES=$(find .cursor -name "project-*" 2>/dev/null || true)
-
-# Copy .cursor folder
-cp -r "$CACHE_DIR/.cursor"/* .cursor/
-
-# Restore project-specific files
-if [ -n "$PROJECT_FILES" ]; then
-    echo "$PROJECT_FILES" | while read -r file; do
-        cp "$file" ".cursor/$(basename $(dirname $file))/$(basename $file)"
-    done
-fi
-
-echo "✅ Cursor Rules synced!"
+# 2. Sync rules
+crules sync
 ```
 
-Make it executable:
+## Best Practices
 
-```bash
-chmod +x cursor-sync.sh
-```
+1. **Always check status before pushing**: Run `crules status` first
+2. **Review diffs**: Use `crules diff` to see exactly what changed
+3. **Use dry-run**: Test with `--dry-run` before making changes
+4. **Commit often**: Push changes regularly so other projects stay updated
+5. **Use project-specific files**: For project-specific rules, use files matching your pattern
+6. **Sync regularly**: Run `crules sync` when starting work on a project
+7. **Configure globally**: Set common settings in `~/.cursor-rules.json`
+
+## Troubleshooting
+
+### Repository not found
+
+**Error:** `Failed to clone repository`
+
+**Solution:**
+
+- Check your internet connection
+- Verify the repository URL is correct: `crules config get repository`
+- Ensure git is installed: `git --version`
+- Check repository permissions (if private, ensure SSH keys are set up)
+
+### Git push fails
+
+**Error:** `Failed to push changes`
+
+**Solution:**
+
+- Ensure you have write access to the repository
+- Check git credentials: `git config --global user.name` and `git config --global user.email`
+- Verify remote URL: `cd ~/.cursor-rules-cache && git remote -v`
+
+### Project-specific files being overwritten
+
+**Solution:**
+
+- Check your pattern: `crules config get projectSpecificPattern`
+- Ensure filenames match the pattern (default: starts with `project-`)
+- Verify pattern is a valid regex
+
+### Cache issues
+
+**Solution:**
+
+- Clear cache: Delete `~/.cursor-rules-cache`
+- Re-sync: `crules sync` will recreate the cache
+
+## Requirements
+
+- Node.js >= 14.0.0
+- Git installed and configured
+- Network access (for repository operations)
+
+## Contributing
+
+Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+## License
+
+MIT License - see [LICENSE](LICENSE) for details.
+
+## Related Projects
+
+- [Cursor Editor](https://cursor.sh) - The AI-powered code editor this tool is designed for
+
+## Support
+
+- 📖 [Documentation](https://github.com/eyyMinda/Cursor-Rules#readme)
+- 🐛 [Report Issues](https://github.com/eyyMinda/Cursor-Rules/issues)
+- 💬 [Discussions](https://github.com/eyyMinda/Cursor-Rules/discussions)
+
+---
+
+Made with ❤️ for the Cursor community

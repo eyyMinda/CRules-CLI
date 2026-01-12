@@ -1,3 +1,5 @@
 node_modules/
 .cursor-rules-cache/
 *.log
+.cursor-rules.json
+.DS_Store

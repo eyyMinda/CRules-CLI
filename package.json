@@ -1,23 +1,45 @@
 {
-  "name": "@eyyminda/cursor-rules-sync",
-  "version": "1.1.0",
-  "description": "Sync Cursor rules from GitHub repo to any project",
+  "name": "cursor-rules-cli",
+  "version": "2.0.0",
+  "description": "CLI tool to sync Cursor editor rules and commands from a centralized repository",
+  "main": "bin/crules.js",
   "bin": {
-    "cursor-sync": "./bin/cursor-sync.js",
-    "cursor-push": "./bin/cursor-push.js",
-    "cursor-status": "./bin/cursor-status.js",
-    "cursor-diff": "./bin/cursor-diff.js",
-    "cursor-version": "./bin/cursor-version.js",
-    "cursor-help": "./bin/cursor-help.js"
+    "crules": "./bin/crules.js"
   },
   "scripts": {
     "install-global": "npm install -g ."
   },
   "keywords": [
     "cursor",
+    "cursor-editor",
     "rules",
-    "sync"
+    "sync",
+    "cli",
+    "cursor-rules",
+    "cursor-config",
+    "ai-assistant",
+    "vscode"
   ],
-  "author": "",
-  "license": "MIT"
+  "author": "eyyMinda",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/eyyMinda/Cursor-Rules.git"
+  },
+  "bugs": {
+    "url": "https://github.com/eyyMinda/Cursor-Rules/issues"
+  },
+  "homepage": "https://github.com/eyyMinda/Cursor-Rules#readme",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "files": [
+    "bin",
+    "lib",
+    "LICENSE",
+    "README.md"
+  ],
+  "dependencies": {
+    "commander": "^11.1.0"
+  }
 }

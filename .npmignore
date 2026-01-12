@@ -1,0 +1,36 @@
+# Development files
+.cursor/
+.git/
+.gitignore
+node_modules/
+*.log
+*.md
+!README.md
+
+# Scripts
+cursor-sync.ps1
+*.sh
+
+# Old bin files (replaced by crules.js)
+bin/cursor-*.js
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test files
+test/
+tests/
+*.test.js
+*.spec.js
+
+# Documentation (except README)
+CONTRIBUTING.md
+CHANGELOG.md
