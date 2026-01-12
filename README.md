@@ -2,9 +2,17 @@
 
 A global CLI tool to sync `.cursor` rules and commands from a centralized GitHub repository to any Shopify theme project.
 
-## Setup
+## 🚀 Features
 
-### 1. Install globally
+- **Sync** rules from repo to any project
+- **Push** local changes back to the repository
+- **Status** check to see what's different
+- **Diff** view for individual files
+- **Auto-preserve** project-specific files (files starting with `project-`)
+
+## 📦 Setup
+
+### Install globally
 
 From this directory, run:
 
@@ -12,38 +20,119 @@ From this directory, run:
 npm install -g .
 ```
 
-Or if you prefer to install from the GitHub repo directly:
+Or install from GitHub directly:
 
 ```bash
 npm install -g git+https://github.com/eyyMinda/Cursor-Rules.git
 ```
 
-### 2. Use in any project
+## 🎯 Commands
 
-Navigate to any Shopify theme project and run:
+### `cursor-sync`
+
+Sync rules from the repository to your current project.
 
 ```bash
 cursor-sync
 ```
 
-This will:
+**What it does:**
 
-- Clone/update the Cursor Rules repository to `~/.cursor-rules-cache`
-- Copy the `.cursor` folder to your current project
-- Preserve any project-specific files (files starting with `project-`)
+- Updates the cached repository
+- Copies `.cursor` folder to your project
+- Preserves project-specific files (files starting with `project-`)
 
-## Project-Specific Files
+### `cursor-push` ⭐
 
-Files starting with `project-` in `.cursor/rules/` or `.cursor/commands/` will be preserved during sync. For example:
+Push your local changes back to the repository.
 
-- `project-7879-specific.mdc` ✅ Preserved
-- `project-store-xyz.mdc` ✅ Preserved
-- `shopify-reusable-snippets.mdc` ❌ Synced from repo
+```bash
+cursor-push
+```
 
-## Updating Rules
+**What it does:**
 
-1. Make changes to your GitHub repo: `https://github.com/eyyMinda/Cursor-Rules.git`
-2. Run `cursor-sync` in any project to get the latest changes
+- Shows what files were added/modified/deleted
+- Optionally shows detailed diff
+- Prompts for confirmation
+- Commits and pushes changes to GitHub
+
+**Example workflow:**
+
+1. Make changes to rules in your project
+2. Run `cursor-push` to review changes
+3. Confirm to push updates to the repo
+4. Other projects can now `cursor-sync` to get your updates
+
+### `cursor-status`
+
+Check what's different between your project and the repository.
+
+```bash
+cursor-status
+```
+
+**What it shows:**
+
+- New files (not in repo)
+- Modified files (different from repo)
+- Deleted files (in repo but not in project)
+- Synced files count
+
+### `cursor-diff`
+
+View detailed diff for a specific file.
+
+```bash
+cursor-diff <file-path>
+```
+
+**Example:**
+
+```bash
+cursor-diff rules/shopify-reusable-snippets.mdc
+```
+
+## 📁 Project-Specific Files
+
+Files starting with `project-` in `.cursor/rules/` or `.cursor/commands/` will be **preserved** during sync and **ignored** during push. For example:
+
+- `project-7879-specific.mdc` ✅ Preserved (project-specific)
+- `project-store-xyz.mdc` ✅ Preserved (project-specific)
+- `shopify-reusable-snippets.mdc` ❌ Synced from repo (shared)
+
+## 🔄 Typical Workflow
+
+### Working on rules in a project:
+
+```bash
+# 1. Make changes to rules in your project
+# Edit .cursor/rules/some-rule.mdc
+
+# 2. Check what changed
+cursor-status
+
+# 3. Review detailed diff (optional)
+cursor-diff rules/some-rule.mdc
+
+# 4. Push changes to repository
+cursor-push
+```
+
+### Getting latest rules in a project:
+
+```bash
+# Just sync from repo
+cursor-sync
+```
+
+## 💡 Best Practices
+
+1. **Always check status before pushing**: Run `cursor-status` first
+2. **Review diffs**: Use `cursor-diff` to see exactly what changed
+3. **Commit often**: Push changes regularly so other projects stay updated
+4. **Use project-specific files**: For store-specific rules, use `project-` prefix
+5. **Sync regularly**: Run `cursor-sync` when starting work on a project
 
 ## Manual Setup (Alternative)
 
