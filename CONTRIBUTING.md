@@ -58,7 +58,7 @@ Before submitting a PR:
 ## Development Setup
 
 **Note:** This section is for contributors who want to modify the CLI code.
-End users should install via `npm install -g cursor-rules-cli` (see [README.md](README.md)).
+End users should install via `npm install -g crules-cli` (see [README.md](README.md)).
 
 1. Clone the repository:
 

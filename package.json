@@ -1,5 +1,5 @@
 {
-  "name": "cursor-rules-cli",
+  "name": "crules-cli",
   "version": "2.0.0",
   "description": "CLI tool to sync Cursor editor rules and commands from a centralized repository",
   "main": "bin/crules.js",

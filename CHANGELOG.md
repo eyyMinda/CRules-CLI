@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Complete refactor: renamed from `cursor-*` commands to `crules` with subcommands
-- Package renamed from `@eyyminda/cursor-rules-sync` to `cursor-rules-cli`
+- Package renamed from `@eyyminda/cursor-rules-sync` to `crules-cli`
 - Restructured codebase with command handlers in `lib/commands/`
 - Added commander.js for better CLI framework
 
