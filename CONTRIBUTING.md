@@ -63,7 +63,7 @@ End users should install via `npm install -g crules-cli` (see [README.md](README
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/eyyMinda/Cursor-Rules.git
+   git clone https://github.com/eyyMinda/CRules-CLI.git
    cd Cursor-Rules
    ```
 

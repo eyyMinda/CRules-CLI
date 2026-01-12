@@ -28,5 +28,5 @@ PROJECT-SPECIFIC FILES:
   Files starting with 'project-' are preserved during sync
   and ignored during push. Use them for store-specific rules.
 
-For more details, see: https://github.com/eyyMinda/Cursor-Rules
+For more details, see: https://github.com/eyyMinda/CRules-CLI
 `);

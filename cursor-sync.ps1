@@ -1,7 +1,7 @@
 # Cursor Rules Sync - PowerShell Script
 # Usage: .\cursor-sync.ps1 or add to PATH for global access
 
-$repoUrl = "https://github.com/eyyMinda/Cursor-Rules.git"
+$repoUrl = "https://github.com/eyyMinda/CRules-CLI.git"
 $cacheDir = "$env:USERPROFILE\.cursor-rules-cache"
 $currentDir = Get-Location
 

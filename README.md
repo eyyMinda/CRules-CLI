@@ -29,7 +29,7 @@ npm install -g crules-cli
 ### Via GitHub
 
 ```bash
-npm install -g git+https://github.com/eyyMinda/Cursor-Rules.git
+npm install -g git+https://github.com/eyyMinda/CRules-CLI.git
 ```
 
 ## Quick Start
@@ -294,9 +294,9 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 ## Support
 
-- 📖 [Documentation](https://github.com/eyyMinda/Cursor-Rules#readme)
-- 🐛 [Report Issues](https://github.com/eyyMinda/Cursor-Rules/issues)
-- 💬 [Discussions](https://github.com/eyyMinda/Cursor-Rules/discussions)
+- 📖 [Documentation](https://github.com/eyyMinda/CRules-CLI#readme)
+- 🐛 [Report Issues](https://github.com/eyyMinda/CRules-CLI/issues)
+- 💬 [Discussions](https://github.com/eyyMinda/CRules-CLI/discussions)
 
 ---
 
