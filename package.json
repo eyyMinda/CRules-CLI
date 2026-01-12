@@ -1,0 +1,18 @@
+{
+  "name": "@eyyminda/cursor-rules-sync",
+  "version": "1.0.0",
+  "description": "Sync Cursor rules from GitHub repo to any project",
+  "bin": {
+    "cursor-sync": "./bin/cursor-sync.js"
+  },
+  "scripts": {
+    "install-global": "npm install -g ."
+  },
+  "keywords": [
+    "cursor",
+    "rules",
+    "sync"
+  ],
+  "author": "",
+  "license": "MIT"
+}
