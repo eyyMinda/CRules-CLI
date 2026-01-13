@@ -3,8 +3,6 @@
 [![npm version](https://img.shields.io/npm/v/crules-cli.svg)](https://www.npmjs.com/package/crules-cli)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-> **Note:** This package (`crules-cli`) is different from [`cursor-rules-cli`](https://github.com/CyberWalrus/cursor-rules-cli) by CyberWalrus. This tool focuses on syncing Cursor rules from a centralized repository, while `cursor-rules-cli` provides a comprehensive rules system for Cursor IDE.
-
 A generic CLI tool to sync [Cursor editor](https://cursor.sh) rules and commands from **your own** GitHub repository to any project. This tool does **not** include any cursor rules - you must configure your own repository containing your `.cursor` folder. Perfect for teams and individuals who want to maintain consistent coding standards and AI assistant configurations across multiple projects.
 
 ## Features
