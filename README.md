@@ -3,11 +3,11 @@
 [![npm version](https://img.shields.io/npm/v/crules-cli.svg)](https://www.npmjs.com/package/crules-cli)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A generic CLI tool to sync [Cursor editor](https://cursor.sh) rules and commands from **your own** GitHub repository to any project. This tool does **not** include any cursor rules - you must configure your own repository containing your `.cursor` folder. Perfect for teams and individuals who want to maintain consistent coding standards and AI assistant configurations across multiple projects.
+A generic CLI tool to sync [Cursor editor](https://cursor.sh) `.cursor/` folder contents (rules, commands, docs, and more) from **your own** GitHub repository to any project. This tool does **not** include any cursor rules - you must configure your own repository containing your `.cursor` folder. Perfect for teams and individuals who want to maintain consistent coding standards and AI assistant configurations across multiple projects.
 
 ## Features
 
-- 🔄 **Sync** rules from repository to any project
+- 🔄 **Sync** `.cursor/` folder contents from repository to any project
 - 📤 **Push** local changes back to the repository
 - 📊 **Status** check to see what's different
 - 🔍 **Diff** view for individual files
@@ -44,7 +44,7 @@ npm install -g git+https://github.com/eyyMinda/CRules-CLI.git
    crules config set repository https://github.com/username/your-cursor-rules.git --global
    ```
 
-   Your repository should contain a `.cursor` folder with your rules and commands.
+   Your repository should contain a `.cursor` folder with your cursor configuration files (rules, commands, docs, etc.).
 
 2. **Sync rules to your project:**
 
@@ -185,13 +185,42 @@ Configuration can be set globally (`~/.cursor-rules.json`) or per-project (`.cur
    └── .cursor/
        ├── rules/
        │   └── your-rules.mdc
-       └── commands/
-           └── your-commands.mdc
+       ├── commands/
+       │   └── your-commands.mdc
+       └── docs/
+           └── your-docs.md
    ```
 3. Configure the repository URL:
    ```bash
    crules config set repository https://github.com/username/your-cursor-rules.git
    ```
+
+### Supported .cursor/ Folder Types
+
+CRules CLI supports syncing all folders within the `.cursor/` directory. The following folder types are fully supported with project-specific file preservation:
+
+#### `rules/` - Coding Rules and Guidelines
+
+- **Purpose**: Contains MDC (Markdown Cursor) files with coding rules, best practices, and guidelines
+- **File Extension**: `.mdc` files
+- **Example**: `rules/shopify-reusable-snippets.mdc`, `rules/typescript-best-practices.mdc`
+- **Project-Specific**: Files matching `projectSpecificPattern` (e.g., `project-7879-specific.mdc`) are preserved during sync
+
+#### `commands/` - Custom Cursor Commands
+
+- **Purpose**: Contains custom command files that extend Cursor's functionality
+- **File Extension**: Any extension (typically `.js`, `.ts`, `.mdc`, etc.)
+- **Example**: `commands/generate-component.mdc`, `commands/setup-project.js`
+- **Project-Specific**: Files matching `projectSpecificPattern` are preserved during sync
+
+#### `docs/` - Documentation Files
+
+- **Purpose**: Contains project documentation, guides, and reference materials
+- **File Extension**: Any extension (typically `.md`, `.txt`, etc.)
+- **Example**: `docs/architecture.md`, `docs/api-reference.md`
+- **Project-Specific**: Files matching `projectSpecificPattern` are preserved during sync
+
+**Note**: While CRules CLI recursively syncs the entire `.cursor/` folder (supporting any subdirectories), project-specific file preservation currently works for `rules/`, `commands/`, and `docs/` folders. Files in other folders are synced but project-specific files in those folders won't be automatically preserved.
 
 ### Configuration Options
 
@@ -218,9 +247,11 @@ Files matching the `projectSpecificPattern` (default: `^project-`) are:
 
 **Example:**
 
-- `project-7879-specific.mdc` ✅ Preserved (project-specific)
-- `project-store-xyz.mdc` ✅ Preserved (project-specific)
-- `shopify-reusable-snippets.mdc` ❌ Synced from repo (shared)
+- `rules/project-7879-specific.mdc` ✅ Preserved (project-specific)
+- `commands/project-store-xyz.mdc` ✅ Preserved (project-specific)
+- `docs/project-internal-guide.md` ✅ Preserved (project-specific)
+- `rules/shopify-reusable-snippets.mdc` ❌ Synced from repo (shared)
+- `commands/generate-component.mdc` ❌ Synced from repo (shared)
 
 ## Typical Workflow
 
