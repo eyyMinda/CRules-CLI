@@ -41,7 +41,7 @@ npm install -g git+https://github.com/eyyMinda/CRules-CLI.git
    ```bash
    # Set your repository URL (replace with your own repo)
    crules config set repository https://github.com/username/your-cursor-rules.git
-   
+
    # Or set it globally for all projects
    crules config set repository https://github.com/username/your-cursor-rules.git --global
    ```
