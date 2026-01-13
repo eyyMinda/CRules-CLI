@@ -5,7 +5,7 @@
 
 > **Note:** This package (`crules-cli`) is different from [`cursor-rules-cli`](https://github.com/CyberWalrus/cursor-rules-cli) by CyberWalrus. This tool focuses on syncing Cursor rules from a centralized repository, while `cursor-rules-cli` provides a comprehensive rules system for Cursor IDE.
 
-A powerful CLI tool to sync [Cursor editor](https://cursor.sh) rules and commands from a centralized GitHub repository to any project. Perfect for teams and individuals who want to maintain consistent coding standards and AI assistant configurations across multiple projects.
+A generic CLI tool to sync [Cursor editor](https://cursor.sh) rules and commands from **your own** GitHub repository to any project. This tool does **not** include any cursor rules - you must configure your own repository containing your `.cursor` folder. Perfect for teams and individuals who want to maintain consistent coding standards and AI assistant configurations across multiple projects.
 
 ## Features
 
@@ -34,19 +34,33 @@ npm install -g git+https://github.com/eyyMinda/CRules-CLI.git
 
 ## Quick Start
 
-1. **Sync rules to your project:**
+**⚠️ Important:** This CLI tool requires you to configure your own cursor rules repository. The package does not include any cursor rules.
+
+1. **Configure your cursor rules repository (required first step):**
+
+   ```bash
+   # Set your repository URL (replace with your own repo)
+   crules config set repository https://github.com/username/your-cursor-rules.git
+   
+   # Or set it globally for all projects
+   crules config set repository https://github.com/username/your-cursor-rules.git --global
+   ```
+
+   Your repository should contain a `.cursor` folder with your rules and commands.
+
+2. **Sync rules to your project:**
 
    ```bash
    crules sync
    ```
 
-2. **Check what's different:**
+3. **Check what's different:**
 
    ```bash
    crules status
    ```
 
-3. **Push your changes back:**
+4. **Push your changes back:**
    ```bash
    crules push
    ```
@@ -160,7 +174,26 @@ crules config set repository https://github.com/user/repo.git --global
 
 ## Configuration
 
+**🔴 Required:** You **must** configure a repository URL before using this tool. The CLI will not work without a configured repository.
+
 Configuration can be set globally (`~/.cursor-rules.json`) or per-project (`.cursor-rules.json` in project root). Local config overrides global config.
+
+### Setting Up Your Repository
+
+1. Create a GitHub repository (or use an existing one) that contains your `.cursor` folder
+2. The repository should have a structure like:
+   ```
+   your-repo/
+   └── .cursor/
+       ├── rules/
+       │   └── your-rules.mdc
+       └── commands/
+           └── your-commands.mdc
+   ```
+3. Configure the repository URL:
+   ```bash
+   crules config set repository https://github.com/username/your-cursor-rules.git
+   ```
 
 ### Configuration Options
 
@@ -173,7 +206,7 @@ Configuration can be set globally (`~/.cursor-rules.json`) or per-project (`.cur
 }
 ```
 
-- **repository**: Git repository URL containing your `.cursor` folder
+- **repository** (required): Git repository URL containing your `.cursor` folder. Must be configured before using any commands.
 - **cacheDir**: Local directory to cache the repository (supports `~` expansion)
 - **projectSpecificPattern**: Regex pattern to identify project-specific files
 - **commitMessage**: Commit message template (use `{summary}` placeholder)
@@ -219,7 +252,7 @@ crules sync
 ### Setting up a new project:
 
 ```bash
-# 1. Configure repository (if different from default)
+# 1. Configure repository (required - no default repository)
 crules config set repository https://github.com/your-org/cursor-rules.git
 
 # 2. Sync rules
@@ -238,6 +271,16 @@ crules sync
 
 ## Troubleshooting
 
+### Repository not configured
+
+**Error:** `Repository not configured. Please set it using: crules config set repository <your-repo-url>`
+
+**Solution:**
+
+- Configure your repository URL: `crules config set repository <your-repo-url>`
+- Verify configuration: `crules config get repository`
+- See [Configuration](#configuration) section for details
+
 ### Repository not found
 
 **Error:** `Failed to clone repository`
@@ -248,6 +291,7 @@ crules sync
 - Verify the repository URL is correct: `crules config get repository`
 - Ensure git is installed: `git --version`
 - Check repository permissions (if private, ensure SSH keys are set up)
+- Ensure your repository contains a `.cursor` folder
 
 ### Git push fails
 

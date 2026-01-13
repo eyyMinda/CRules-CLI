@@ -64,7 +64,7 @@ End users should install via `npm install -g crules-cli` (see [README.md](README
 
    ```bash
    git clone https://github.com/eyyMinda/CRules-CLI.git
-   cd Cursor-Rules
+   cd CRules-CLI
    ```
 
 2. Install dependencies (for development):
@@ -94,6 +94,12 @@ End users should install via `npm install -g crules-cli` (see [README.md](README
   - `commands/` - Command handlers
   - `config.js` - Configuration management
   - `utils.js` - Shared utilities
+
+## Important Notes
+
+- **This repository does not contain cursor rules** - it is a generic CLI tool for syncing cursor rules from any repository
+- **Do not add `.cursor` folder or cursor rules to this repository** - contributors should focus on improving the CLI tool itself
+- End users configure their own cursor rules repositories separately
 
 ## Questions?
 
