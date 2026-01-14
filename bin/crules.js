@@ -68,14 +68,30 @@ program
 
 program
   .command('config')
-  .description('Manage configuration')
-  .argument('[action]', 'action: get or set', 'get')
-  .argument('[key]', 'configuration key')
-  .argument('[value]', 'configuration value (for set action)')
+  .description('Manage configuration and multiple config profiles')
+  .argument('[action]', 'action: list, get, set, use, create, delete, edit, rename', 'get')
+  .argument('[key]', 'configuration key, alias, or old alias (depending on action)')
+  .argument('[value]', 'configuration value, new alias, or config key (depending on action)')
+  .argument('[extra]', 'extra value for edit command (config value when action is edit)')
   .option('-g, --global', 'use global config file')
-  .action(async (action, key, value, options) => {
+  .option('-a, --alias <alias>', 'specify config alias for get/set operations')
+  .option('-r, --repository <url>', 'repository URL (for create command)')
+  .option('-p, --pattern <pattern>', 'project-specific pattern (for create command)')
+  .option('-m, --commit-message <message>', 'commit message template (for create command)')
+  .option('--key <key>', 'config key (for edit command)')
+  .option('--value <value>', 'config value (for edit command)')
+  .action(async (action, key, value, extra, options) => {
     try {
-      await configCommand(action, key, value, options);
+      // For edit command: action=edit, key=alias, value=configKey, extra=configValue
+      // Or use --key and --value options
+      if (action === 'edit' && (options.key || options.value)) {
+        await configCommand(action, key, options.key || value, { ...options, editValue: options.value || extra });
+      } else if (action === 'edit' && extra) {
+        // edit alias key value format
+        await configCommand(action, key, value, { ...options, editValue: extra });
+      } else {
+        await configCommand(action, key, value, options);
+      }
     } catch (error) {
       process.exit(1);
     }
