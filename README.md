@@ -5,17 +5,6 @@
 
 A generic CLI tool to sync [Cursor editor](https://cursor.sh) `.cursor/` folder contents (rules, commands, docs, and more) from **your own** GitHub repository to any project. This tool does **not** include any cursor rules - you must configure your own repository containing your `.cursor` folder. Perfect for teams and individuals who want to maintain consistent coding standards and AI assistant configurations across multiple projects.
 
-## Features
-
-- 🔄 **Sync** `.cursor/` folder contents from repository to any project
-- 📤 **Push** local changes back to the repository
-- 📊 **Status** check to see what's different
-- 🔍 **Diff** view for individual files
-- ⚙️ **Configuration** management via config files
-- 🛡️ **Auto-preserve** project-specific files
-- 🚀 **Dry-run** mode to preview changes
-- 📝 **Verbose** output for debugging
-
 ## Installation
 
 ### Via npm (Recommended)
@@ -63,6 +52,49 @@ npm install -g git+https://github.com/eyyMinda/CRules-CLI.git
    crules push
    ```
 
+## Quick Examples
+
+**First time setup:**
+
+```bash
+# 1. Configure your cursor rules repository (required)
+crules config set repository https://github.com/username/your-cursor-rules.git
+
+# 2. Sync rules to your project
+crules sync
+```
+
+**Daily usage:**
+
+```bash
+# Get latest rules from repository
+crules sync
+
+# Check what changed
+crules status
+
+# Push your changes back
+crules push
+
+# View diff for a specific file
+crules diff rules/some-rule.mdc
+```
+
+**Multiple configs (for different project types):**
+
+```bash
+# Create configs for different project types
+crules config create shopify-theme --repository https://github.com/user/shopify-rules.git
+crules config create react --repository https://github.com/user/react-rules.git
+
+# Switch between configs
+crules config use shopify-theme
+crules sync  # Uses shopify-theme config
+
+crules config use react
+crules sync  # Uses react config
+```
+
 ## Commands
 
 ### `crules sync`
@@ -78,11 +110,21 @@ crules sync [options]
 - `-v, --verbose` - Show detailed output
 - `--dry-run` - Preview changes without applying them
 
+**Examples:**
+
+```bash
+crules sync
+crules sync --verbose
+crules sync --dry-run  # Preview what would change
+```
+
 **What it does:**
 
 - Updates the cached repository
 - Copies `.cursor` folder to your project
 - Preserves project-specific files (files matching the configured pattern)
+
+---
 
 ### `crules push`
 
@@ -98,12 +140,23 @@ crules push [options]
 - `--dry-run` - Preview what would be pushed
 - `-f, --force` - Skip confirmation prompts
 
+**Examples:**
+
+```bash
+crules push
+crules push --verbose
+crules push --dry-run  # See what would be pushed
+crules push --force    # Skip confirmation
+```
+
 **What it does:**
 
 - Shows what files were added/modified/deleted
 - Optionally shows detailed diff
 - Prompts for confirmation (unless `--force`)
 - Commits and pushes changes to GitHub
+
+---
 
 ### `crules status`
 
@@ -117,12 +170,21 @@ crules status [options]
 
 - `-v, --verbose` - Show detailed output
 
+**Examples:**
+
+```bash
+crules status
+crules status --verbose
+```
+
 **What it shows:**
 
 - New files (not in repo)
 - Modified files (different from repo)
 - Deleted files (in repo but not in project)
 - Synced files count
+
+---
 
 ### `crules diff <file>`
 
@@ -136,45 +198,115 @@ crules diff <file-path> [options]
 
 - `-v, --verbose` - Show unchanged lines
 
-**Example:**
+**Examples:**
 
 ```bash
 crules diff rules/shopify-reusable-snippets.mdc
+crules diff commands/generate-component.mdc --verbose
 ```
+
+---
 
 ### `crules config`
 
-Manage configuration settings.
+Manage configuration settings and multiple config profiles.
 
 ```bash
-crules config [get|set] [key] [value] [options]
+crules config <action> [arguments] [options]
 ```
+
+**Actions:**
+
+- `list` - List all available configs
+- `get [key]` - Get active config (or specific key)
+- `set <key> <value>` - Set value in active config
+- `use <alias>` - Switch to a named config
+- `create <alias>` - Create a new named config
+- `edit <alias> <key> <value>` - Edit a specific config value
+- `rename <old-alias> <new-alias>` - Rename a config alias
+- `delete <alias>` - Delete a config
 
 **Options:**
 
 - `-g, --global` - Use global config file (`~/.cursor-rules.json`)
+- `-a, --alias <alias>` - Specify config alias for get/set operations
+- `-r, --repository <url>` - Repository URL (for create command)
+- `-p, --pattern <pattern>` - Project-specific pattern (for create command)
+- `-m, --commit-message <message>` - Commit message template (for create command)
 
 **Examples:**
 
 ```bash
-# Show all configuration
+# List all configs
+crules config list
+
+# Show active configuration
 crules config get
 
 # Get specific value
 crules config get repository
 
-# Set a value (local config)
+# Set repository URL
 crules config set repository https://github.com/user/repo.git
-
-# Set a value (global config)
 crules config set repository https://github.com/user/repo.git --global
+
+# Create and use a new config
+crules config create shopify-theme --repository https://github.com/user/shopify-rules.git
+crules config use shopify-theme
+
+# Edit a config value
+crules config edit shopify-theme repository https://github.com/user/new-repo.git
+
+# Rename a config
+crules config rename shopify-theme shopify-app
+
+# Delete a config
+crules config delete shopify-theme
 ```
+
+## Features
+
+- 🔄 **Sync** `.cursor/` folder contents from repository to any project
+- 📤 **Push** local changes back to the repository
+- 📊 **Status** check to see what's different
+- 🔍 **Diff** view for individual files
+- ⚙️ **Multiple configs** - Switch between different cursor rules repositories
+- 🛡️ **Auto-preserve** project-specific files
+- 🚀 **Dry-run** mode to preview changes
+- 📝 **Verbose** output for debugging
 
 ## Configuration
 
 **🔴 Required:** You **must** configure a repository URL before using this tool. The CLI will not work without a configured repository.
 
+CRules CLI supports **multiple named configs**, allowing you to switch between different cursor rules repositories for different project types (e.g., React development, Shopify themes, Shopify apps).
+
 Configuration can be set globally (`~/.cursor-rules.json`) or per-project (`.cursor-rules.json` in project root). Local config overrides global config.
+
+### Multiple Configs
+
+You can create multiple config profiles with aliases to manage different cursor rules repositories:
+
+- **Default config**: No alias required, always available
+- **Named configs**: Must have an alias (e.g., `shopify-theme`, `react`, `shopify-app`)
+- **Active config**: The currently selected config used by sync/push/status/diff commands
+- **Cache isolation**: Each config has its own cache directory
+
+**Example workflow:**
+
+```bash
+# Create configs for different project types
+crules config create shopify-theme --repository https://github.com/user/shopify-theme-rules.git
+crules config create react --repository https://github.com/user/react-rules.git
+crules config create shopify-app --repository https://github.com/user/shopify-app-rules.git
+
+# Switch between configs
+crules config use shopify-theme  # Now sync/push will use shopify-theme config
+crules config use react           # Switch to react config
+
+# List all configs
+crules config list
+```
 
 ### Setting Up Your Repository
 
@@ -191,8 +323,14 @@ Configuration can be set globally (`~/.cursor-rules.json`) or per-project (`.cur
            └── your-docs.md
    ```
 3. Configure the repository URL:
+
    ```bash
+   # For default config
    crules config set repository https://github.com/username/your-cursor-rules.git
+
+   # Or create a named config
+   crules config create my-config --repository https://github.com/username/your-cursor-rules.git
+   crules config use my-config
    ```
 
 ### Supported .cursor/ Folder Types
@@ -224,19 +362,49 @@ CRules CLI supports syncing all folders within the `.cursor/` directory. The fol
 
 ### Configuration Options
 
+**New Multi-Config Format:**
+
 ```json
 {
-  "repository": "https://github.com/username/cursor-rules.git",
-  "cacheDir": "~/.cursor-rules-cache",
-  "projectSpecificPattern": "^project-",
-  "commitMessage": "Update cursor rules: {summary}"
+  "active": "shopify-theme",
+  "configs": {
+    "default": {
+      "repository": "https://github.com/username/cursor-rules.git",
+      "cacheDir": "~/.cursor-rules-cache/default",
+      "projectSpecificPattern": "^project-",
+      "commitMessage": "Update cursor rules: {summary}"
+    },
+    "shopify-theme": {
+      "repository": "https://github.com/username/shopify-theme-rules.git",
+      "cacheDir": "~/.cursor-rules-cache/shopify-theme",
+      "projectSpecificPattern": "^project-",
+      "commitMessage": "Update cursor rules: {summary}"
+    },
+    "react": {
+      "repository": "https://github.com/username/react-rules.git",
+      "cacheDir": "~/.cursor-rules-cache/react",
+      "projectSpecificPattern": "^project-",
+      "commitMessage": "Update cursor rules: {summary}"
+    }
+  }
 }
 ```
 
+**Config Properties:**
+
+- **active**: Name of the currently active config (defaults to "default")
+- **configs**: Object containing all config profiles
+  - **default**: The default config (no alias, always exists)
+  - **[alias]**: Named configs with aliases (e.g., "shopify-theme", "react")
+
+**Per-Config Options:**
+
 - **repository** (required): Git repository URL containing your `.cursor` folder. Must be configured before using any commands.
-- **cacheDir**: Local directory to cache the repository (supports `~` expansion)
+- **cacheDir**: Local directory to cache the repository (supports `~` expansion). Named configs automatically use `~/.cursor-rules-cache/{alias}` unless customized.
 - **projectSpecificPattern**: Regex pattern to identify project-specific files
 - **commitMessage**: Commit message template (use `{summary}` placeholder)
+
+**Note:** Old single-config format is automatically migrated to the new multi-config format on first use.
 
 ### Project-Specific Files
 
@@ -281,10 +449,22 @@ crules sync
 ### Setting up a new project:
 
 ```bash
+# Option 1: Use default config
 # 1. Configure repository (required - no default repository)
 crules config set repository https://github.com/your-org/cursor-rules.git
 
 # 2. Sync rules
+crules sync
+
+# Option 2: Use a named config
+# 1. Switch to existing config (if you have one)
+crules config use shopify-theme
+
+# 2. Or create a new config for this project type
+crules config create shopify-theme --repository https://github.com/your-org/shopify-rules.git
+crules config use shopify-theme
+
+# 3. Sync rules
 crules sync
 ```
 
