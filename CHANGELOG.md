@@ -5,6 +5,39 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1] - 2026-01-13
+
+### Added
+
+- **Multiple Configs Support**: Create and manage multiple named configs for different project types (e.g., `shopify-theme`, `react`, `shopify-app`)
+- **Config Management Commands**:
+  - `crules config create <alias>` - Create new named config
+  - `crules config use <alias>` - Switch active config
+  - `crules config list` - List all available configs
+  - `crules config edit <alias> <key> <value>` - Edit specific config value
+  - `crules config rename <old-alias> <new-alias>` - Rename config alias
+  - `crules config delete <alias>` - Delete a config
+- **Per-Config Cache Isolation**: Each config has its own cache directory (`~/.cursor-rules-cache/{alias}`)
+- **Auto-Migration**: Old single-config format automatically migrates to new multi-config format
+
+### Changed
+
+- Config file structure now supports multiple configs with `active` and `configs` properties
+- Default config is always available (no alias required)
+- Config commands now use gear icon (⚙️) instead of light bulb icon
+- README reorganized for better user experience (Quick Start before Quick Examples)
+
+### Fixed
+
+- Improved config file merging logic (global vs local)
+- Better error messages for config operations
+
+### Backward Compatibility
+
+- ✅ Simple 3-step workflow (install → set repo → sync) still works exactly as before
+- ✅ Old config files automatically migrate to new format
+- ✅ No breaking changes - existing users can continue using the tool without any changes
+
 ## [1.0.0] - 2026-01-XX
 
 ### Initial Release
