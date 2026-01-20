@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.3] - 2026-01-17
+
+### Fixed
+
+- **Non-Fast-Forward Push Errors**: Automatically handles `non-fast-forward` errors when pushing. The CLI now:
+  - Detects when remote has changes that conflict with local commits
+  - Automatically performs `git pull --rebase` to integrate remote changes
+  - Retries the push after successfully rebasing
+  - Provides clear error messages with resolution steps if merge conflicts occur during rebase
+
 ## [1.0.2] - 2026-01-17
 
 ### Fixed
