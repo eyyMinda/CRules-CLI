@@ -154,6 +154,10 @@ crules push --force    # Skip confirmation
 - Shows what files were added/modified/deleted
 - Optionally shows detailed diff
 - Prompts for confirmation (unless `--force`)
+- Automatically resolves git identity (user.name and user.email) from:
+  - Cache directory git config
+  - Global git config (`git config --global`)
+  - Current project's git config (if project is a git repository)
 - Commits and pushes changes to GitHub
 
 ---
@@ -504,13 +508,22 @@ crules sync
 
 ### Git push fails
 
-**Error:** `Failed to push changes`
+**Error:** `Failed to push changes` or `Git user.name and user.email are not configured`
 
 **Solution:**
 
+- **Git identity is automatically resolved** - The CLI will try to find git identity from:
+  1. Cache directory's git config
+  2. Your global git config (`git config --global`)
+  3. Your current project's git config (if the project is a git repository)
+- If none are found, configure git identity:
+  ```bash
+  git config --global user.name "Your Name"
+  git config --global user.email "you@example.com"
+  ```
 - Ensure you have write access to the repository
-- Check git credentials: `git config --global user.name` and `git config --global user.email`
 - Verify remote URL: `cd ~/.cursor-rules-cache && git remote -v`
+- If upstream branch is missing, the CLI will automatically set it on first push
 
 ### Project-specific files being overwritten
 
@@ -531,7 +544,10 @@ crules sync
 
 - Node.js >= 14.0.0
 - Git installed and configured
+- Git identity configured (user.name and user.email) - usually already set globally
 - Network access (for repository operations)
+
+**Note:** Git identity is automatically resolved from your global git config, cache directory, or current project. Most users don't need to configure anything additional.
 
 ## Contributing
 
