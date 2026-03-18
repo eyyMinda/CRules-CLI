@@ -5,6 +5,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- **`crules pull`** - Pull rules from repository (replaces `crules sync`)
+- **Ignore list** - `crules ignore add/remove/list` to exclude patterns/files from pull, push, status
+- **Status differentiation** - "Modified" (local changes) vs "Outdated" (remote has updates)
+- **Diff improvements** - Unified diff focused on changes only; `-v` for context lines
+- **`--quiet` / `-q`** - Suppress non-error output on pull, push, status, diff
+- **`--no-cache-update`** - Skip git pull in cache for pull command
+- **`--no-pull`** - Skip auto-pull when remote ahead on push (fail instead)
+- **Code of Conduct** - Added CODE_OF_CONDUCT.md (Contributor Covenant 2.1)
+
+### Changed
+
+- **Removed `crules sync`** - Use `crules pull` instead
+- **Config** - New `ignoreList` option (array of glob patterns)
+- Status output - Now shows "Modified - local changes" and "Outdated - remote has updates" sections
+
+### Fixed
+
+- Diff output now shows only changed lines by default (unified diff style)
+
+---
+
 ## [1.0.3] - 2026-01-17
 
 ### Fixed
