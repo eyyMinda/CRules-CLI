@@ -13,7 +13,7 @@ const program = new Command();
 
 program
   .name('crules')
-  .description('CLI tool to pull and push Cursor editor rules and commands from a centralized repository')
+  .description('CLI to pull and push plugin configs (open plugin standard) from a repository')
   .version(packageJson.version);
 
 program
