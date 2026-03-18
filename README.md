@@ -35,10 +35,10 @@ npm install -g git+https://github.com/eyyMinda/CRules-CLI.git
 
    Your repository should contain a `.cursor` folder with your cursor configuration files (rules, commands, docs, etc.).
 
-2. **Sync rules to your project:**
+2. **Pull rules to your project:**
 
    ```bash
-   crules sync
+   crules pull
    ```
 
 3. **Check what's different:**
@@ -60,15 +60,15 @@ npm install -g git+https://github.com/eyyMinda/CRules-CLI.git
 # 1. Configure your cursor rules repository (required)
 crules config set repository https://github.com/username/your-cursor-rules.git
 
-# 2. Sync rules to your project
-crules sync
+# 2. Pull rules to your project
+crules pull
 ```
 
 **Daily usage:**
 
 ```bash
 # Get latest rules from repository
-crules sync
+crules pull
 
 # Check what changed
 crules status
@@ -89,40 +89,45 @@ crules config create react --repository https://github.com/user/react-rules.git
 
 # Switch between configs
 crules config use shopify-theme
-crules sync  # Uses shopify-theme config
+crules pull  # Uses shopify-theme config
 
 crules config use react
-crules sync  # Uses react config
+crules pull  # Uses react config
 ```
 
 ## Commands
 
-### `crules sync`
+### `crules pull`
 
-Sync rules from the repository to your current project.
+Pull rules from the repository to your current project.
 
 ```bash
-crules sync [options]
+crules pull [options]
 ```
 
 **Options:**
 
 - `-v, --verbose` - Show detailed output
+- `-q, --quiet` - Suppress non-error output
 - `--dry-run` - Preview changes without applying them
+- `--no-cache-update` - Skip git pull in cache, use existing cache only
 
 **Examples:**
 
 ```bash
-crules sync
-crules sync --verbose
-crules sync --dry-run  # Preview what would change
+crules pull
+crules pull --verbose
+crules pull --dry-run       # Preview what would change
+crules pull --no-cache-update  # Use cached repo without fetching
+crules pull -q              # Quiet mode for scripts
 ```
 
 **What it does:**
 
-- Updates the cached repository
+- Updates the cached repository (unless `--no-cache-update`)
 - Copies `.cursor` folder to your project
 - Preserves project-specific files (files matching the configured pattern)
+- Respects ignore list (excluded files are not copied)
 
 ---
 
@@ -137,16 +142,20 @@ crules push [options]
 **Options:**
 
 - `-v, --verbose` - Show detailed output
+- `-q, --quiet` - Suppress non-error output
 - `--dry-run` - Preview what would be pushed
 - `-f, --force` - Skip confirmation prompts
+- `--no-pull` - Skip auto-pull when remote is ahead (fail instead)
 
 **Examples:**
 
 ```bash
 crules push
 crules push --verbose
-crules push --dry-run  # See what would be pushed
-crules push --force    # Skip confirmation
+crules push --dry-run   # See what would be pushed
+crules push --force     # Skip confirmation
+crules push --no-pull   # Fail if remote has changes (use crules pull first)
+crules push -q -f       # Quiet, no prompts
 ```
 
 **What it does:**
@@ -173,26 +182,29 @@ crules status [options]
 **Options:**
 
 - `-v, --verbose` - Show detailed output
+- `-q, --quiet` - Suppress non-error output
 
 **Examples:**
 
 ```bash
 crules status
 crules status --verbose
+crules status -q
 ```
 
 **What it shows:**
 
-- New files (not in repo)
-- Modified files (different from repo)
-- Deleted files (in repo but not in project)
-- Synced files count
+- **New files** - Not in repo
+- **Modified** - Local changes (project differs from repo)
+- **Deleted** - In repo but not in project
+- **Outdated** - Remote has updates (need `crules pull`)
+- **Synced** - In sync count
 
 ---
 
 ### `crules diff <file>`
 
-View detailed diff for a specific file.
+View unified diff for a specific file. Shows only changed lines by default.
 
 ```bash
 crules diff <file-path> [options]
@@ -200,14 +212,51 @@ crules diff <file-path> [options]
 
 **Options:**
 
-- `-v, --verbose` - Show unchanged lines
+- `-v, --verbose` - Show 3 lines of context around changes
+- `-q, --quiet` - Suppress diff output
 
 **Examples:**
 
 ```bash
 crules diff rules/shopify-reusable-snippets.mdc
 crules diff commands/generate-component.mdc --verbose
+crules diff rules/some.mdc -q   # Check exit code only
 ```
+
+---
+
+### `crules ignore`
+
+Manage ignore list — patterns or files excluded from pull, push, and status.
+
+```bash
+crules ignore <action> [pattern] [options]
+```
+
+**Actions:**
+
+- `add <pattern|file>` - Add pattern or path to ignore list
+- `remove <pattern|file>` - Remove from ignore list
+- `list` - Show current ignore entries
+
+**Options:**
+
+- `-g, --global` - Use global config
+- `-a, --alias <alias>` - Target specific config
+
+**Examples:**
+
+```bash
+crules ignore add "*.bak"
+crules ignore add "rules/draft-*.mdc"
+crules ignore add "commands/experimental.js"
+crules ignore list
+crules ignore remove "*.bak"
+crules ignore add "*.tmp" -g          # Global config
+crules ignore list -a shopify-theme   # For specific config
+```
+
+**Patterns:** Use glob patterns (e.g. `*.bak`, `rules/draft-*`) or exact paths. Entries can also be edited manually in `.cursor-rules.json` under `ignoreList`.
 
 ---
 
@@ -270,14 +319,15 @@ crules config delete shopify-theme
 
 ## Features
 
-- 🔄 **Sync** `.cursor/` folder contents from repository to any project
+- 🔄 **Pull** `.cursor/` folder contents from repository to any project
 - 📤 **Push** local changes back to the repository
-- 📊 **Status** check to see what's different
-- 🔍 **Diff** view for individual files
+- 📊 **Status** check (modified vs outdated, local changes vs remote updates)
+- 🔍 **Diff** unified diff for individual files (focused on changes)
+- 🚫 **Ignore list** - Exclude patterns/files from pull, push, status
 - ⚙️ **Multiple configs** - Switch between different cursor rules repositories
 - 🛡️ **Auto-preserve** project-specific files
 - 🚀 **Dry-run** mode to preview changes
-- 📝 **Verbose** output for debugging
+- 📝 **Verbose** and **quiet** output modes
 
 ## Configuration
 
@@ -293,7 +343,7 @@ You can create multiple config profiles with aliases to manage different cursor 
 
 - **Default config**: No alias required, always available
 - **Named configs**: Must have an alias (e.g., `shopify-theme`, `react`, `shopify-app`)
-- **Active config**: The currently selected config used by sync/push/status/diff commands
+- **Active config**: The currently selected config used by pull/push/status/diff commands
 - **Cache isolation**: Each config has its own cache directory
 
 **Example workflow:**
@@ -305,7 +355,7 @@ crules config create react --repository https://github.com/user/react-rules.git
 crules config create shopify-app --repository https://github.com/user/shopify-app-rules.git
 
 # Switch between configs
-crules config use shopify-theme  # Now sync/push will use shopify-theme config
+crules config use shopify-theme  # Now pull/push will use shopify-theme config
 crules config use react           # Switch to react config
 
 # List all configs
@@ -376,7 +426,8 @@ CRules CLI supports syncing all folders within the `.cursor/` directory. The fol
       "repository": "https://github.com/username/cursor-rules.git",
       "cacheDir": "~/.cursor-rules-cache/default",
       "projectSpecificPattern": "^project-",
-      "commitMessage": "Update cursor rules: {summary}"
+      "commitMessage": "Update cursor rules: {summary}",
+      "ignoreList": []
     },
     "shopify-theme": {
       "repository": "https://github.com/username/shopify-theme-rules.git",
@@ -407,6 +458,7 @@ CRules CLI supports syncing all folders within the `.cursor/` directory. The fol
 - **cacheDir**: Local directory to cache the repository (supports `~` expansion). Named configs automatically use `~/.cursor-rules-cache/{alias}` unless customized.
 - **projectSpecificPattern**: Regex pattern to identify project-specific files
 - **commitMessage**: Commit message template (use `{summary}` placeholder)
+- **ignoreList**: Array of glob patterns or paths to exclude from pull, push, status (e.g. `["*.bak", "rules/draft-*"]`). Manage via `crules ignore add/remove/list` or edit config manually.
 
 **Note:** Old single-config format is automatically migrated to the new multi-config format on first use.
 
@@ -414,7 +466,7 @@ CRules CLI supports syncing all folders within the `.cursor/` directory. The fol
 
 Files matching the `projectSpecificPattern` (default: `^project-`) are:
 
-- ✅ **Preserved** during sync (not overwritten)
+- ✅ **Preserved** during pull (not overwritten)
 - 🚫 **Ignored** during push (not pushed to repository)
 
 **Example:**
@@ -422,8 +474,19 @@ Files matching the `projectSpecificPattern` (default: `^project-`) are:
 - `rules/project-7879-specific.mdc` ✅ Preserved (project-specific)
 - `commands/project-store-xyz.mdc` ✅ Preserved (project-specific)
 - `docs/project-internal-guide.md` ✅ Preserved (project-specific)
-- `rules/shopify-reusable-snippets.mdc` ❌ Synced from repo (shared)
-- `commands/generate-component.mdc` ❌ Synced from repo (shared)
+- `rules/shopify-reusable-snippets.mdc` ❌ Pulled from repo (shared)
+- `commands/generate-component.mdc` ❌ Pulled from repo (shared)
+
+### Ignore List
+
+Files/patterns in `ignoreList` are excluded from pull, push, and status. Use `crules ignore add/remove/list` or edit `.cursor-rules.json`:
+
+```json
+"ignoreList": ["*.bak", "rules/draft-*.mdc", "commands/experimental.js"]
+```
+
+- **Pull**: Ignored files are not copied from repo to project
+- **Push/Status**: Ignored files are not compared or pushed
 
 ## Typical Workflow
 
@@ -446,8 +509,8 @@ crules push
 ### Getting latest rules in a project:
 
 ```bash
-# Just sync from repo
-crules sync
+# Pull from repo
+crules pull
 ```
 
 ### Setting up a new project:
@@ -457,8 +520,8 @@ crules sync
 # 1. Configure repository (required - no default repository)
 crules config set repository https://github.com/your-org/cursor-rules.git
 
-# 2. Sync rules
-crules sync
+# 2. Pull rules
+crules pull
 
 # Option 2: Use a named config
 # 1. Switch to existing config (if you have one)
@@ -468,8 +531,8 @@ crules config use shopify-theme
 crules config create shopify-theme --repository https://github.com/your-org/shopify-rules.git
 crules config use shopify-theme
 
-# 3. Sync rules
-crules sync
+# 3. Pull rules
+crules pull
 ```
 
 ## Best Practices
@@ -479,7 +542,7 @@ crules sync
 3. **Use dry-run**: Test with `--dry-run` before making changes
 4. **Commit often**: Push changes regularly so other projects stay updated
 5. **Use project-specific files**: For project-specific rules, use files matching your pattern
-6. **Sync regularly**: Run `crules sync` when starting work on a project
+6. **Pull regularly**: Run `crules pull` when starting work on a project
 7. **Configure globally**: Set common settings in `~/.cursor-rules.json`
 
 ## Troubleshooting
@@ -538,7 +601,7 @@ crules sync
 **Solution:**
 
 - Clear cache: Delete `~/.cursor-rules-cache`
-- Re-sync: `crules sync` will recreate the cache
+- Re-pull: `crules pull` will recreate the cache
 
 ## Requirements
 
@@ -551,7 +614,7 @@ crules sync
 
 ## Contributing
 
-Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) for community standards.
 
 ## License
 
