@@ -3,7 +3,7 @@
 [![npm version](https://img.shields.io/npm/v/crules-cli.svg)](https://www.npmjs.com/package/crules-cli)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A generic CLI tool to sync [Cursor editor](https://cursor.sh) `.cursor/` folder contents (rules, commands, docs, and more) from **your own** GitHub repository to any project. This tool does **not** include any cursor rules - you must configure your own repository containing your `.cursor` folder. Perfect for teams and individuals who want to maintain consistent coding standards and AI assistant configurations across multiple projects.
+A CLI tool to pull and push plugin configurations from **your own** repository to any project. Supports the **open plugin standard** — rules, skills, agents, hooks, MCP and LSP configs — as well as legacy `.cursor/` layouts. Configure your own repository; the package does not include any rules or plugins.
 
 ## Installation
 
@@ -33,7 +33,7 @@ npm install -g git+https://github.com/eyyMinda/CRules-CLI.git
    crules config set repository https://github.com/username/your-cursor-rules.git --global
    ```
 
-   Your repository should contain a `.cursor` folder with your cursor configuration files (rules, commands, docs, etc.).
+   Your repository should follow the [open plugin standard](#open-plugin-standard) or contain a `.cursor/` folder.
 
 2. **Pull rules to your project:**
 
@@ -362,20 +362,34 @@ crules config use react           # Switch to react config
 crules config list
 ```
 
+### Open Plugin Standard
+
+CRules CLI supports the open plugin structure. Your repository can look like:
+
+```
+my-plugin/
+├── .plugin/
+│   └── plugin.json       # Manifest: name, version, metadata
+├── skills/               # Agent Skills (SKILL.md format)
+├── agents/               # Specialized sub-agents
+├── hooks/                # Event-driven automation
+├── rules/                # Coding standards (.mdc files)
+├── commands/             # Custom commands
+├── docs/                 # Documentation
+├── .mcp.json             # MCP tool servers
+└── .lsp.json             # Language server configs
+```
+
+**Config:** Set `sourcePath` to `.` (repo root) and `targetPath` to `.cursor` to sync the plugin into `.cursor/`. Use `targetPath: "."` to place it at project root.
+
+**Legacy `.cursor/` layout:** Default `sourcePath` and `targetPath` are `.cursor` — works with repos that have a `.cursor/` folder.
+
 ### Setting Up Your Repository
 
-1. Create a GitHub repository (or use an existing one) that contains your `.cursor` folder
-2. The repository should have a structure like:
-   ```
-   your-repo/
-   └── .cursor/
-       ├── rules/
-       │   └── your-rules.mdc
-       ├── commands/
-       │   └── your-commands.mdc
-       └── docs/
-           └── your-docs.md
-   ```
+1. Create a GitHub repository (or use an existing one) with your plugin or `.cursor` folder
+2. Either:
+   - **Plugin format:** Place `.plugin/`, `skills/`, `rules/`, etc. at repo root (see above)
+   - **Legacy format:** Use a `.cursor/` folder with `rules/`, `commands/`, `docs/`
 3. Configure the repository URL:
 
    ```bash
@@ -387,32 +401,20 @@ crules config list
    crules config use my-config
    ```
 
-### Supported .cursor/ Folder Types
+### Supported Folder Types
 
-CRules CLI supports syncing all folders within the `.cursor/` directory. The following folder types are fully supported with project-specific file preservation:
+Project-specific file preservation (files matching `projectSpecificPattern`) works for:
 
-#### `rules/` - Coding Rules and Guidelines
+| Folder | Purpose |
+|--------|---------|
+| `rules/` | Coding standards (.mdc files) |
+| `commands/` | Custom commands |
+| `docs/` | Documentation |
+| `skills/` | Agent skills (SKILL.md format) |
+| `agents/` | Specialized sub-agents |
+| `hooks/` | Event-driven automation |
 
-- **Purpose**: Contains MDC (Markdown Cursor) files with coding rules, best practices, and guidelines
-- **File Extension**: `.mdc` files
-- **Example**: `rules/shopify-reusable-snippets.mdc`, `rules/typescript-best-practices.mdc`
-- **Project-Specific**: Files matching `projectSpecificPattern` (e.g., `project-7879-specific.mdc`) are preserved during sync
-
-#### `commands/` - Custom Cursor Commands
-
-- **Purpose**: Contains custom command files that extend Cursor's functionality
-- **File Extension**: Any extension (typically `.js`, `.ts`, `.mdc`, etc.)
-- **Example**: `commands/generate-component.mdc`, `commands/setup-project.js`
-- **Project-Specific**: Files matching `projectSpecificPattern` are preserved during sync
-
-#### `docs/` - Documentation Files
-
-- **Purpose**: Contains project documentation, guides, and reference materials
-- **File Extension**: Any extension (typically `.md`, `.txt`, etc.)
-- **Example**: `docs/architecture.md`, `docs/api-reference.md`
-- **Project-Specific**: Files matching `projectSpecificPattern` are preserved during sync
-
-**Note**: While CRules CLI recursively syncs the entire `.cursor/` folder (supporting any subdirectories), project-specific file preservation currently works for `rules/`, `commands/`, and `docs/` folders. Files in other folders are synced but project-specific files in those folders won't be automatically preserved.
+All folders are synced recursively. Project-specific files are preserved during pull and excluded from push.
 
 ### Configuration Options
 
@@ -425,6 +427,8 @@ CRules CLI supports syncing all folders within the `.cursor/` directory. The fol
     "default": {
       "repository": "https://github.com/username/cursor-rules.git",
       "cacheDir": "~/.cursor-rules-cache/default",
+      "sourcePath": ".cursor",
+      "targetPath": ".cursor",
       "projectSpecificPattern": "^project-",
       "commitMessage": "Update cursor rules: {summary}",
       "ignoreList": []
@@ -454,8 +458,10 @@ CRules CLI supports syncing all folders within the `.cursor/` directory. The fol
 
 **Per-Config Options:**
 
-- **repository** (required): Git repository URL containing your `.cursor` folder. Must be configured before using any commands.
+- **repository** (required): Git repository URL. Must be configured before using any commands.
 - **cacheDir**: Local directory to cache the repository (supports `~` expansion). Named configs automatically use `~/.cursor-rules-cache/{alias}` unless customized.
+- **sourcePath**: Path within the cached repo to sync from (default: `.cursor`). Use `.` or `` for plugin root.
+- **targetPath**: Path in the project to sync to (default: `.cursor`). Use `.` for project root.
 - **projectSpecificPattern**: Regex pattern to identify project-specific files
 - **commitMessage**: Commit message template (use `{summary}` placeholder)
 - **ignoreList**: Array of glob patterns or paths to exclude from pull, push, status (e.g. `["*.bak", "rules/draft-*"]`). Manage via `crules ignore add/remove/list` or edit config manually.
