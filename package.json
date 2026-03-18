@@ -1,7 +1,7 @@
 {
   "name": "crules-cli",
-  "version": "1.0.3",
-  "description": "Generic CLI tool to sync Cursor editor rules and commands from your own repository (requires configuration)",
+  "version": "1.0.4",
+  "description": "CLI to pull and push Cursor editor rules and commands from your own repository (requires configuration)",
   "main": "bin/crules.js",
   "bin": {
     "crules": "./bin/crules.js"
@@ -13,7 +13,8 @@
     "cursor",
     "cursor-editor",
     "rules",
-    "sync",
+    "pull",
+    "push",
     "cli",
     "cursor-rules",
     "cursor-config",
@@ -37,9 +38,12 @@
     "bin",
     "lib",
     "LICENSE",
-    "README.md"
+    "README.md",
+    "CODE_OF_CONDUCT.md"
   ],
   "dependencies": {
-    "commander": "^11.1.0"
+    "commander": "^11.1.0",
+    "diff": "^8.0.3",
+    "minimatch": "^10.2.4"
   }
 }

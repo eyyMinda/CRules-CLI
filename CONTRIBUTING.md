@@ -4,10 +4,7 @@ Thank you for your interest in contributing to Cursor Rules CLI! This document p
 
 ## Code of Conduct
 
-- Be respectful and inclusive
-- Welcome newcomers and help them learn
-- Focus on constructive feedback
-- Be open to different perspectives
+This project adheres to the [Contributor Covenant Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code.
 
 ## How to Contribute
 
