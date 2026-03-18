@@ -1,6 +1,6 @@
 {
   "name": "crules-cli",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "CLI to pull and push plugin configs (open plugin standard: rules, skills, agents, hooks) from your own repository",
   "main": "bin/crules.js",
   "bin": {
