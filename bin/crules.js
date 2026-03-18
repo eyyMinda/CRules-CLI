@@ -8,6 +8,7 @@ const statusCommand = require('../lib/commands/status');
 const diffCommand = require('../lib/commands/diff');
 const configCommand = require('../lib/commands/config');
 const ignoreCommand = require('../lib/commands/ignore');
+const runTUI = require('../lib/commands/tui');
 
 const program = new Command();
 
@@ -119,4 +120,12 @@ program
     }
   });
 
-program.parse();
+const args = process.argv.slice(2);
+if (args.length === 0) {
+  runTUI().catch((err) => {
+    console.error(err.message || err);
+    process.exit(1);
+  });
+} else {
+  program.parse();
+}

@@ -52,6 +52,8 @@ npm install -g git+https://github.com/eyyMinda/CRules-CLI.git
    crules push
    ```
 
+**Interactive mode:** Run `crules` with no arguments to launch an interactive menu for Pull, Push, Status, Diff, Config, and Ignore.
+
 ## Quick Examples
 
 **First time setup:**
@@ -96,6 +98,24 @@ crules pull  # Uses react config
 ```
 
 ## Commands
+
+### `crules` (interactive mode)
+
+Run without a subcommand to open an interactive menu:
+
+```bash
+crules
+```
+
+- **Pull** – Get latest from repository
+- **Push** – Push local changes
+- **Status** – See what's different
+- **Diff** – View diff for a file (prompts for path)
+- **Config** – List, get, set, or switch configs
+- **Ignore** – List, add, or remove ignore patterns
+- **Exit** – Quit
+
+After each action you can return to the menu. Use `crules -h` for non-interactive help.
 
 ### `crules pull`
 
