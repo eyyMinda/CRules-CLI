@@ -1,6 +1,6 @@
 {
   "name": "crules-cli",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "CLI to pull and push Cursor editor rules and commands from your own repository (requires configuration)",
   "main": "bin/crules.js",
   "bin": {
