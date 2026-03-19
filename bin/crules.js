@@ -22,6 +22,7 @@ program
   .description('Pull rules from repository to current project')
   .option('-v, --verbose', 'verbose output')
   .option('-q, --quiet', 'suppress non-error output')
+  .option('-f, --force', 'overwrite locally modified files')
   .option('--dry-run', 'show what would be pulled without making changes')
   .option('--no-cache-update', 'skip git pull in cache, use existing cache only')
   .action(async (options) => {
