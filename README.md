@@ -129,6 +129,7 @@ crules pull [options]
 
 - `-v, --verbose` - Show detailed output
 - `-q, --quiet` - Suppress non-error output
+- `-f, --force` - Overwrite locally modified files
 - `--dry-run` - Preview changes without applying them
 - `--no-cache-update` - Skip git pull in cache, use existing cache only
 
@@ -137,6 +138,7 @@ crules pull [options]
 ```bash
 crules pull
 crules pull --verbose
+crules pull --force         # Overwrite local changes
 crules pull --dry-run       # Preview what would change
 crules pull --no-cache-update  # Use cached repo without fetching
 crules pull -q              # Quiet mode for scripts
@@ -144,6 +146,7 @@ crules pull -q              # Quiet mode for scripts
 
 **What it does:**
 
+- Fails if you have locally modified files (use `--force` to overwrite)
 - Updates the cached repository (unless `--no-cache-update`)
 - Copies `.cursor` folder to your project
 - Preserves project-specific files (files matching the configured pattern)
