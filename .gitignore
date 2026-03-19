@@ -1,6 +1,5 @@
 node_modules/
-.cursor-rules-cache/
 *.log
-.cursor-rules.json
+.crules-cli-config.json
 .cursor/
 .DS_Store

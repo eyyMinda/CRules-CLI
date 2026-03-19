@@ -30,7 +30,7 @@ npm install -g git+https://github.com/eyyMinda/CRules-CLI.git
    crules config set repository https://github.com/username/your-cursor-rules.git
 
    # Or set it globally for all projects
-   crules config set repository https://github.com/username/your-cursor-rules.git --global
+   crules config set repository https://github.com/username/your-cursor-rules.git
    ```
 
    Your repository should follow the [open plugin standard](#open-plugin-standard) or contain a `.cursor/` folder.
@@ -261,7 +261,7 @@ crules ignore <action> [pattern] [options]
 
 **Options:**
 
-- `-g, --global` - Use global config
+- `-l, --local` - Use per-project config
 - `-a, --alias <alias>` - Target specific config
 
 **Examples:**
@@ -272,11 +272,11 @@ crules ignore add "rules/draft-*.mdc"
 crules ignore add "commands/experimental.js"
 crules ignore list
 crules ignore remove "*.bak"
-crules ignore add "*.tmp" -g          # Global config
+crules ignore add "*.tmp" --local     # Per-project
 crules ignore list -a shopify-theme   # For specific config
 ```
 
-**Patterns:** Use glob patterns (e.g. `*.bak`, `rules/draft-*`) or exact paths. Entries can also be edited manually in `.cursor-rules.json` under `ignoreList`.
+**Patterns:** Use glob patterns (e.g. `*.bak`, `rules/draft-*`) or exact paths. Edit `ignoreList` in `~/.crules-cli/.crules-cli-config.json` or use `crules ignore add/remove/list`.
 
 ---
 
@@ -301,7 +301,7 @@ crules config <action> [arguments] [options]
 
 **Options:**
 
-- `-g, --global` - Use global config file (`~/.cursor-rules.json`)
+- `-l, --local` - Use per-project config (`.crules-cli-config.json` in project root). Default is global.
 - `-a, --alias <alias>` - Specify config alias for get/set operations
 - `-r, --repository <url>` - Repository URL (for create command)
 - `-p, --pattern <pattern>` - Project-specific pattern (for create command)
@@ -319,13 +319,16 @@ crules config get
 # Get specific value
 crules config get repository
 
-# Set repository URL
+# Set repository URL (global by default)
 crules config set repository https://github.com/user/repo.git
-crules config set repository https://github.com/user/repo.git --global
+crules config set repository https://github.com/user/repo.git --local  # Per-project
 
 # Create and use a new config
 crules config create shopify-theme --repository https://github.com/user/shopify-rules.git
 crules config use shopify-theme
+
+# Create per-project config (use -l / --local)
+crules config create my-local --repository https://github.com/user/repo.git --local
 
 # Edit a config value
 crules config edit shopify-theme repository https://github.com/user/new-repo.git
@@ -355,7 +358,9 @@ crules config delete shopify-theme
 
 CRules CLI supports **multiple named configs**, allowing you to switch between different cursor rules repositories for different project types (e.g., React development, Shopify themes, Shopify apps).
 
-Configuration can be set globally (`~/.cursor-rules.json`) or per-project (`.cursor-rules.json` in project root). Local config overrides global config.
+**Default (global):** Config at `~/.crules-cli/.crules-cli-config.json`. Cache dirs under `~/.crules-cli/` (e.g. `default/`, `nextjs/`).
+
+**Per-project:** Use `--local` / `-l` to create or modify config in `./.crules-cli-config.json` (project root). Local overrides global when both exist.
 
 ### Multiple Configs
 
@@ -438,7 +443,17 @@ All folders are synced recursively. Project-specific files are preserved during 
 
 ### Configuration Options
 
-**New Multi-Config Format:**
+**Config location:** `~/.crules-cli/.crules-cli-config.json`
+
+**Directory structure:**
+```
+~/.crules-cli/
+├── .crules-cli-config.json   # All configs + active alias
+├── default/                  # Cache for default config
+└── {alias}/                  # Cache per named config (e.g. nextjs/)
+```
+
+**Config format:**
 
 ```json
 {
@@ -446,7 +461,7 @@ All folders are synced recursively. Project-specific files are preserved during 
   "configs": {
     "default": {
       "repository": "https://github.com/username/cursor-rules.git",
-      "cacheDir": "~/.cursor-rules-cache/default",
+      "cacheDir": "~/.crules-cli/default",
       "sourcePath": ".cursor",
       "targetPath": ".cursor",
       "projectSpecificPattern": "^project-",
@@ -455,13 +470,7 @@ All folders are synced recursively. Project-specific files are preserved during 
     },
     "shopify-theme": {
       "repository": "https://github.com/username/shopify-theme-rules.git",
-      "cacheDir": "~/.cursor-rules-cache/shopify-theme",
-      "projectSpecificPattern": "^project-",
-      "commitMessage": "Update cursor rules: {summary}"
-    },
-    "react": {
-      "repository": "https://github.com/username/react-rules.git",
-      "cacheDir": "~/.cursor-rules-cache/react",
+      "cacheDir": "~/.crules-cli/shopify-theme",
       "projectSpecificPattern": "^project-",
       "commitMessage": "Update cursor rules: {summary}"
     }
@@ -473,13 +482,13 @@ All folders are synced recursively. Project-specific files are preserved during 
 
 - **active**: Name of the currently active config (defaults to "default")
 - **configs**: Object containing all config profiles
-  - **default**: The default config (no alias, always exists)
-  - **[alias]**: Named configs with aliases (e.g., "shopify-theme", "react")
+  - **default**: The default config (always exists)
+  - **[alias]**: Named configs (e.g., "shopify-theme", "nextjs")
 
 **Per-Config Options:**
 
 - **repository** (required): Git repository URL. Must be configured before using any commands.
-- **cacheDir**: Local directory to cache the repository (supports `~` expansion). Named configs automatically use `~/.cursor-rules-cache/{alias}` unless customized.
+- **cacheDir**: Cache directory for this config. Defaults to `~/.crules-cli/{alias}`.
 - **sourcePath**: Path within the cached repo to sync from (default: `.cursor`). Use `.` or `` for plugin root.
 - **targetPath**: Path in the project to sync to (default: `.cursor`). Use `.` for project root.
 - **projectSpecificPattern**: Regex pattern to identify project-specific files
@@ -505,7 +514,7 @@ Files matching the `projectSpecificPattern` (default: `^project-`) are:
 
 ### Ignore List
 
-Files/patterns in `ignoreList` are excluded from pull, push, and status. Use `crules ignore add/remove/list` or edit `.cursor-rules.json`:
+Files/patterns in `ignoreList` are excluded from pull, push, and status. Use `crules ignore add/remove/list` or edit `~/.crules-cli/.crules-cli-config.json`:
 
 ```json
 "ignoreList": ["*.bak", "rules/draft-*.mdc", "commands/experimental.js"]
@@ -569,7 +578,7 @@ crules pull
 4. **Commit often**: Push changes regularly so other projects stay updated
 5. **Use project-specific files**: For project-specific rules, use files matching your pattern
 6. **Pull regularly**: Run `crules pull` when starting work on a project
-7. **Configure globally**: Set common settings in `~/.cursor-rules.json`
+7. **Configure**: Edit `~/.crules-cli/.crules-cli-config.json` or use `crules config set`
 
 ## Troubleshooting
 
@@ -611,7 +620,7 @@ crules pull
   git config --global user.email "you@example.com"
   ```
 - Ensure you have write access to the repository
-- Verify remote URL: `cd ~/.cursor-rules-cache && git remote -v`
+- Verify remote URL: `cd ~/.crules-cli/default && git remote -v`
 - If upstream branch is missing, the CLI will automatically set it on first push
 
 ### Project-specific files being overwritten
@@ -626,7 +635,7 @@ crules pull
 
 **Solution:**
 
-- Clear cache: Delete `~/.cursor-rules-cache`
+- Clear cache: Delete `~/.crules-cli` (or the specific alias folder)
 - Re-pull: `crules pull` will recreate the cache
 
 ## Requirements
