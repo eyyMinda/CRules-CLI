@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - **`crules pull`** - Pull rules from repository (replaces `crules sync`)
+- **`--local` / `-l`** - Per-project config: create or modify config in `./.crules-cli-config.json` (project root). Use with `config` and `ignore` commands.
 - **Ignore list** - `crules ignore add/remove/list` to exclude patterns/files from pull, push, status
 - **Status differentiation** - "Modified" (local changes) vs "Outdated" (remote has updates)
 - **Diff improvements** - Unified diff focused on changes only; `-v` for context lines
@@ -20,8 +21,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Config structure** - Global: `~/.crules-cli/.crules-cli-config.json`, cache under `~/.crules-cli/{alias}/`. Per-project: `./.crules-cli-config.json` with `--local` flag.
 - **Removed `crules sync`** - Use `crules pull` instead
 - **Config** - New `ignoreList` option (array of glob patterns)
+
+### Removed
+
+- **Migration/backwards compatibility** - No auto-migration from old paths. Only new structure (`~/.crules-cli/`) is supported.
 - Status output - Now shows "Modified - local changes" and "Outdated - remote has updates" sections
 
 ### Fixed

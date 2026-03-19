@@ -79,7 +79,7 @@ program
   .description('Manage ignore list (patterns/files excluded from pull, push, status)')
   .argument('<action>', 'add, remove, list')
   .argument('[pattern]', 'pattern or file path (for add/remove)')
-  .option('-g, --global', 'use global config')
+  .option('-l, --local', 'use per-project config')
   .option('-a, --alias <alias>', 'target config alias')
   .action(async (action, pattern, options) => {
     try {
@@ -96,7 +96,8 @@ program
   .argument('[key]', 'configuration key, alias, or old alias (depending on action)')
   .argument('[value]', 'configuration value, new alias, or config key (depending on action)')
   .argument('[extra]', 'extra value for edit command (config value when action is edit)')
-  .option('-g, --global', 'use global config file')
+  .option('-g, --global', 'use global config (default)')
+  .option('-l, --local', 'use per-project config in .crules-cli-config.json')
   .option('-a, --alias <alias>', 'specify config alias for get/set operations')
   .option('-r, --repository <url>', 'repository URL (for create command)')
   .option('-p, --pattern <pattern>', 'project-specific pattern (for create command)')
