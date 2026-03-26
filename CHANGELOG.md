@@ -36,6 +36,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.2.0] - 2026-03-26
+
+### Added
+
+- Vitest coverage across commands and shared code: `status`, `push`, `sync` (pull), `diff`, `config` CLI dispatch, `ignore`, `utils`, and a minimal `tui` export check (alongside existing `config` and `version-check` tests).
+
+### Changed
+
+- Command internals call shared `utils` module members where tests need to spy or stub (e.g. git exec, remote diff paths, cache/path helpers).
+
+### Fixed
+
+- `crules config edit` passes Commander options through to the edit handler so flag-style usage behaves like positional arguments.
+
+### Documentation
+
+- README: Node **20+** in Requirements (aligned with `engines`); Contributing blurb for `npm test` / Vitest.
+- CONTRIBUTING: Vitest scripts, `vitest.config.mjs`, table of `test/*.test.js` files and conventions (temp dirs / `HOME`).
+
+---
+
 ## [1.1.15] - 2026-03-26
 
 ### Added

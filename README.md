@@ -645,7 +645,7 @@ crules pull
 
 ## Requirements
 
-- Node.js >= 14.0.0
+- Node.js **20+** (same as `engines` in `package.json`)
 - Git installed and configured
 - Git identity configured (user.name and user.email) - usually already set globally
 - Network access (for repository operations)
@@ -655,6 +655,8 @@ crules pull
 ## Contributing
 
 Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) for community standards.
+
+After cloning: `npm install`, then `npm test` (Vitest) and `npm run format:check` before opening a PR. See CONTRIBUTING.md for the test layout and `vitest.config.mjs`.
 
 ## License
 
