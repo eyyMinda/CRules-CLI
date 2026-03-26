@@ -70,6 +70,8 @@ End users should install via `npm install -g crules-cli` (see [README.md](README
    npm install
    ```
 
+   Use **Node.js 20 or later** (see `engines` in `package.json`).
+
 3. Install globally for testing your changes:
 
    ```bash
@@ -84,6 +86,13 @@ End users should install via `npm install -g crules-cli` (see [README.md](README
    crules status
    ```
 
+5. Automated checks (run before opening a PR):
+
+   ```bash
+   npm run format:check
+   npm test
+   ```
+
 ## Project Structure
 
 - `bin/` - CLI entry point
@@ -91,12 +100,21 @@ End users should install via `npm install -g crules-cli` (see [README.md](README
   - `commands/` - Command handlers
   - `config.js` - Configuration management
   - `utils.js` - Shared utilities
+- `test/` - `node:test` unit tests
 
 ## Important Notes
 
 - **This repository does not contain cursor rules** - it is a generic CLI tool for syncing cursor rules from any repository
 - **Do not add `.cursor` folder or cursor rules to this repository** - contributors should focus on improving the CLI tool itself
 - End users configure their own cursor rules repositories separately
+
+## Releasing (maintainers)
+
+1. Bump `version` in `package.json` (and `package-lock.json` root version) and commit.
+2. Create and push an annotated tag matching that version, e.g. `v1.2.3`.
+3. The **Release** workflow publishes to npm when the tag is pushed.
+
+Configure the **`NPM_TOKEN`** repository secret (npm automation token with publish permission). Without it, the workflow cannot authenticate to the registry.
 
 ## Questions?
 
