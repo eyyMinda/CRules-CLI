@@ -70,6 +70,8 @@ End users should install via `npm install -g crules-cli` (see [README.md](README
    npm install
    ```
 
+   Use **Node.js 20 or later** (see `engines` in `package.json`).
+
 3. Install globally for testing your changes:
 
    ```bash
@@ -84,6 +86,13 @@ End users should install via `npm install -g crules-cli` (see [README.md](README
    crules status
    ```
 
+5. Automated checks (run before opening a PR):
+
+   ```bash
+   npm run format:check
+   npm test
+   ```
+
 ## Project Structure
 
 - `bin/` - CLI entry point
@@ -91,12 +100,37 @@ End users should install via `npm install -g crules-cli` (see [README.md](README
   - `commands/` - Command handlers
   - `config.js` - Configuration management
   - `utils.js` - Shared utilities
+- `test/` - `node:test` unit tests
 
 ## Important Notes
 
 - **This repository does not contain cursor rules** - it is a generic CLI tool for syncing cursor rules from any repository
 - **Do not add `.cursor` folder or cursor rules to this repository** - contributors should focus on improving the CLI tool itself
 - End users configure their own cursor rules repositories separately
+
+## Releasing (maintainers)
+
+Publishing uses [npm trusted publishing](https://docs.npmjs.com/trusted-publishers) (OIDC from GitHub Actions). You do **not** store an `NPM_TOKEN` for releases.
+
+### One-time: link the package to this workflow
+
+On [npmjs.com](https://www.npmjs.com/) → your package → **Settings** → **Trusted Publisher** (or **Publishing access** → trusted publishing, depending on UI):
+
+1. Choose **GitHub Actions**.
+2. **Repository:** `eyyMinda/CRules-CLI` (must match `repository.url` in `package.json` exactly).
+3. **Workflow filename:** `release.yml` (filename only, case-sensitive, including `.yml`).
+
+Save. npm does not validate this until the next publish—double-check spelling.
+
+### Each release
+
+1. Bump `version` in `package.json` (and `package-lock.json` root version) and commit.
+2. Create and push a tag matching that version, e.g. `v1.2.3`.
+3. The **Release** workflow runs on `v*` tags: it publishes to npm with OIDC, then creates a **GitHub Release** for that tag (auto-generated release notes). If `npm publish` fails, no release is created.
+
+Optional hardening after a successful publish: package **Settings** → **Publishing access** → restrict token-based publishes (“disallow tokens” / require 2FA) so only trusted publishing can ship releases.
+
+**Private npm dependencies:** Trusted publishing only covers `npm publish`. If you ever add private packages, use a **read-only** granular token for `npm ci` only (`NODE_AUTH_TOKEN`), not for publish—see npm’s “Handling private dependencies” in the trusted publishers doc.
 
 ## Questions?
 

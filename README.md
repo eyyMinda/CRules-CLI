@@ -19,6 +19,8 @@ npm install -g crules-cli
 npm install -g git+https://github.com/eyyMinda/CRules-CLI.git
 ```
 
+**Requirements:** Node.js **20+** (aligned with dependency baseline; install from [nodejs.org](https://nodejs.org/) or your version manager).
+
 ## Quick Start
 
 **⚠️ Important:** This CLI tool requires you to configure your own cursor rules repository. The package does not include any cursor rules.

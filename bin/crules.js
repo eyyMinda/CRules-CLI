@@ -9,6 +9,7 @@ const diffCommand = require('../lib/commands/diff');
 const configCommand = require('../lib/commands/config');
 const ignoreCommand = require('../lib/commands/ignore');
 const runTUI = require('../lib/commands/tui');
+const { maybePrintUpdateNotice } = require('../lib/version-check');
 
 const program = new Command();
 
@@ -110,7 +111,10 @@ program
       // For edit command: action=edit, key=alias, value=configKey, extra=configValue
       // Or use --key and --value options
       if (action === 'edit' && (options.key || options.value)) {
-        await configCommand(action, key, options.key || value, { ...options, editValue: options.value || extra });
+        await configCommand(action, key, options.key || value, {
+          ...options,
+          editValue: options.value || extra
+        });
       } else if (action === 'edit' && extra) {
         // edit alias key value format
         await configCommand(action, key, value, { ...options, editValue: extra });
@@ -123,11 +127,31 @@ program
   });
 
 const args = process.argv.slice(2);
-if (args.length === 0) {
-  runTUI().catch((err) => {
+const argvQuiet = args.includes('-q') || args.includes('--quiet');
+const skipUpdateNotice =
+  args.includes('--help') ||
+  args.includes('-h') ||
+  args.includes('--version') ||
+  args.includes('-V');
+
+(async () => {
+  if (args.length === 0) {
+    await maybePrintUpdateNotice({ quiet: false });
+    try {
+      await runTUI();
+    } catch (err) {
+      console.error(err.message || err);
+      process.exit(1);
+    }
+    return;
+  }
+  if (!skipUpdateNotice) {
+    await maybePrintUpdateNotice({ quiet: argvQuiet });
+  }
+  try {
+    await program.parseAsync();
+  } catch (err) {
     console.error(err.message || err);
     process.exit(1);
-  });
-} else {
-  program.parse();
-}
+  }
+})();

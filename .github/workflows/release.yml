@@ -1,0 +1,40 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+# OIDC for npm trusted publishing; contents:write for GitHub Release (default GITHUB_TOKEN).
+permissions:
+  id-token: write
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Trusted publishing requires Node >= 22.14 and npm CLI >= 11.5.1 (see npm docs).
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+          registry-url: 'https://registry.npmjs.org'
+          cache: npm
+
+      - name: Ensure npm 11.5.1+ (trusted publishing)
+        run: npm install -g npm@^11.5.1
+
+      - name: Install dependencies (npm ci)
+        run: npm ci
+
+      - name: Publish to npm
+        run: npm publish --access public
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
+          generate_release_notes: true

@@ -1,13 +1,16 @@
 {
   "name": "crules-cli",
-  "version": "1.1.4",
+  "version": "1.1.13",
   "description": "CLI to pull and push plugin configs (open plugin standard: rules, skills, agents, hooks) from your own repository",
   "main": "bin/crules.js",
   "bin": {
     "crules": "./bin/crules.js"
   },
   "scripts": {
-    "install-global": "npm install -g ."
+    "install-global": "npm install -g .",
+    "test": "node --test test/config.test.js test/version-check.test.js",
+    "format": "prettier --write \"bin/**/*.js\" \"lib/**/*.js\" \"test/**/*.js\"",
+    "format:check": "prettier --check \"bin/**/*.js\" \"lib/**/*.js\" \"test/**/*.js\""
   },
   "keywords": [
     "cursor",
@@ -32,7 +35,7 @@
   },
   "homepage": "https://github.com/eyyMinda/CRules-CLI#readme",
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=20.0.0"
   },
   "files": [
     "bin",
@@ -47,5 +50,8 @@
     "inquirer": "^8.2.7",
     "minimatch": "^10.2.4",
     "ora": "^9.3.0"
+  },
+  "devDependencies": {
+    "prettier": "^3.8.1"
   }
 }
