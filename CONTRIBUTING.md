@@ -110,11 +110,27 @@ End users should install via `npm install -g crules-cli` (see [README.md](README
 
 ## Releasing (maintainers)
 
-1. Bump `version` in `package.json` (and `package-lock.json` root version) and commit.
-2. Create and push an annotated tag matching that version, e.g. `v1.2.3`.
-3. The **Release** workflow publishes to npm when the tag is pushed.
+Publishing uses [npm trusted publishing](https://docs.npmjs.com/trusted-publishers) (OIDC from GitHub Actions). You do **not** store an `NPM_TOKEN` for releases.
 
-Configure the **`NPM_TOKEN`** repository secret (npm automation token with publish permission). Without it, the workflow cannot authenticate to the registry.
+### One-time: link the package to this workflow
+
+On [npmjs.com](https://www.npmjs.com/) → your package → **Settings** → **Trusted Publisher** (or **Publishing access** → trusted publishing, depending on UI):
+
+1. Choose **GitHub Actions**.
+2. **Repository:** `eyyMinda/CRules-CLI` (must match `repository.url` in `package.json` exactly).
+3. **Workflow filename:** `release.yml` (filename only, case-sensitive, including `.yml`).
+
+Save. npm does not validate this until the next publish—double-check spelling.
+
+### Each release
+
+1. Bump `version` in `package.json` (and `package-lock.json` root version) and commit.
+2. Create and push a tag matching that version, e.g. `v1.2.3`.
+3. The **Release** workflow runs on `v*` tags and publishes with OIDC.
+
+Optional hardening after a successful publish: package **Settings** → **Publishing access** → restrict token-based publishes (“disallow tokens” / require 2FA) so only trusted publishing can ship releases.
+
+**Private npm dependencies:** Trusted publishing only covers `npm publish`. If you ever add private packages, use a **read-only** granular token for `npm ci` only (`NODE_AUTH_TOKEN`), not for publish—see npm’s “Handling private dependencies” in the trusted publishers doc.
 
 ## Questions?
 

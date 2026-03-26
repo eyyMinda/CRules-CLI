@@ -5,21 +5,26 @@ on:
     tags:
       - 'v*'
 
+# OIDC for npm trusted publishing (no NPM_TOKEN secret).
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   publish:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
     steps:
       - uses: actions/checkout@v4
 
+      # Trusted publishing requires Node >= 22.14 and npm CLI >= 11.5.1 (see npm docs).
       - uses: actions/setup-node@v4
         with:
-          node-version: '20.x'
+          node-version: '22.x'
           registry-url: 'https://registry.npmjs.org'
           cache: npm
 
+      - name: Ensure npm 11.5.1+ (trusted publishing)
+        run: npm install -g npm@^11.5.1
+
       - run: npm ci
       - run: npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
