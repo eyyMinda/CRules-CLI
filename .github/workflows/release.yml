@@ -5,10 +5,10 @@ on:
     tags:
       - 'v*'
 
-# OIDC for npm trusted publishing (no NPM_TOKEN secret).
+# OIDC for npm trusted publishing; contents:write for GitHub Release (default GITHUB_TOKEN).
 permissions:
   id-token: write
-  contents: read
+  contents: write
 
 jobs:
   publish:
@@ -31,3 +31,10 @@ jobs:
 
       - name: Publish to npm
         run: npm publish --access public
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
+          generate_release_notes: true
