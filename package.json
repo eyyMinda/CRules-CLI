@@ -1,6 +1,6 @@
 {
   "name": "crules-cli",
-  "version": "1.1.14",
+  "version": "1.2.0",
   "description": "CLI to pull and push plugin configs (open plugin standard: rules, skills, agents, hooks) from your own repository",
   "main": "bin/crules.js",
   "bin": {
@@ -8,9 +8,10 @@
   },
   "scripts": {
     "install-global": "npm install -g .",
-    "test": "node --test test/config.test.js test/version-check.test.js",
-    "format": "prettier --write \"bin/**/*.js\" \"lib/**/*.js\" \"test/**/*.js\"",
-    "format:check": "prettier --check \"bin/**/*.js\" \"lib/**/*.js\" \"test/**/*.js\""
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "format": "prettier --write \"bin/**/*.js\" \"lib/**/*.js\" \"test/**/*.js\" \"vitest.config.mjs\"",
+    "format:check": "prettier --check \"bin/**/*.js\" \"lib/**/*.js\" \"test/**/*.js\" \"vitest.config.mjs\""
   },
   "keywords": [
     "cursor",
@@ -52,6 +53,7 @@
     "ora": "^9.3.0"
   },
   "devDependencies": {
-    "prettier": "^3.8.1"
+    "prettier": "^3.8.1",
+    "vitest": "^3.2.4"
   }
 }

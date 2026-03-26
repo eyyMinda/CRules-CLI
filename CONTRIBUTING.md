@@ -47,10 +47,39 @@ Feature suggestions are welcome! Please open an issue with:
 
 Before submitting a PR:
 
-- Test all affected commands
+- Test all affected commands manually when behavior changes
 - Test on different operating systems if possible
 - Test edge cases and error conditions
 - Ensure backward compatibility
+- Run automated checks (below); add or extend Vitest specs in `test/` when you fix bugs or add behavior
+
+**Automated suite (Vitest 3, Node test environment):**
+
+| Script        | What it runs                                      |
+| ------------- | ------------------------------------------------- |
+| `npm test`    | `vitest run` — CI-style single pass               |
+| `npm run test:watch` | `vitest` — watch mode while developing     |
+
+**CI:** Push/PR to `main` or `master` runs `npm ci`, `npm run format:check`, and `npm test` (Vitest) on Node **20.x** and **24.x** — see `.github/workflows/ci.yml`.
+
+**Config:** `vitest.config.mjs` — `include: ['test/**/*.test.js']`, `environment: 'node'`, `pool: 'forks'`. Baseline: **49 tests**, **10** spec files (`npm test` to confirm after changes).
+
+**Specs (by area):**
+
+| File                     | Focus |
+| ------------------------ | ----- |
+| `test/config.test.js`    | `lib/config.js` load/save, aliases, paths |
+| `test/config-command.test.js` | `config` command: `edit` / `set` / `use`, temp config + reload |
+| `test/version-check.test.js` | Semver compare helper for update notice |
+| `test/status.test.js`    | `getStatus` buckets, outdated vs remote diff paths |
+| `test/push.test.js`      | Push flow helpers, `execAsync` / git sequences |
+| `test/sync.test.js`      | Pull: dry-run, modified guard, missing source, `--force` |
+| `test/diff.test.js`      | `diff` branches (missing, new, deleted, identical, verbose) |
+| `test/ignore.test.js`    | `ignore` add/list/remove, validation, temp config |
+| `test/utils.test.js`     | `createError`, ignore filtering helpers |
+| `test/tui.test.js`       | Default export + `runAction` export shape |
+
+Many tests use temporary directories and `HOME` overrides so they do not touch your real `~/.crules-cli`. Prefer the same pattern for new command tests.
 
 ## Development Setup
 
@@ -100,7 +129,8 @@ End users should install via `npm install -g crules-cli` (see [README.md](README
   - `commands/` - Command handlers
   - `config.js` - Configuration management
   - `utils.js` - Shared utilities
-- `test/` - `node:test` unit tests
+- `test/` - Vitest unit tests (`npm test` → `vitest run`; see [Testing](#testing))
+- `vitest.config.mjs` - Vitest project config (included in Prettier format paths)
 
 ## Important Notes
 
