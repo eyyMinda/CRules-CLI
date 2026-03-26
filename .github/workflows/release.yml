@@ -16,6 +16,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # npm publish uses package.json "version", not the git tag — catch mismatches before publishing.
+      - name: Verify package.json version matches tag
+        run: |
+          TAG_VER="${GITHUB_REF_NAME#v}"
+          PKG_VER=$(node -p "require('./package.json').version")
+          if [ "$TAG_VER" != "$PKG_VER" ]; then
+            echo "::error::package.json version is $PKG_VER but tag is $GITHUB_REF_NAME (expected $TAG_VER in package.json)"
+            exit 1
+          fi
+
       # Trusted publishing requires Node >= 22.14 and npm CLI >= 11.5.1 (see npm docs).
       - uses: actions/setup-node@v4
         with:

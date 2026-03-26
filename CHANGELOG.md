@@ -36,6 +36,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.1.14] - 2026-03-26
+
+### Fixed
+
+- Release workflow verifies `package.json` `version` matches the pushed `v*` tag before `npm publish`, so the npm tarball and GitHub Release stay aligned.
+
+### Changed
+
+- CONTRIBUTING: release steps note that the tag must point at the version-bump commit (`npm publish` uses `package.json`, not the tag name).
+
 ## [1.0.3] - 2026-01-17
 
 ### Fixed
