@@ -125,7 +125,7 @@ Save. npm does not validate this until the next publish—double-check spelling.
 ### Each release
 
 1. Bump `version` in `package.json` (and `package-lock.json` root version) and commit.
-2. Create and push a tag matching that version, e.g. `v1.2.3`.
+2. Create and push a tag matching that version, e.g. `v1.2.3` for `package.json` `1.2.3`. The tag must point at the **same commit** as the bump — npm uses `package.json`, not the tag name; the workflow fails if they disagree.
 3. The **Release** workflow runs on `v*` tags: it publishes to npm with OIDC, then creates a **GitHub Release** for that tag (auto-generated release notes). If `npm publish` fails, no release is created.
 
 Optional hardening after a successful publish: package **Settings** → **Publishing access** → restrict token-based publishes (“disallow tokens” / require 2FA) so only trusted publishing can ship releases.
