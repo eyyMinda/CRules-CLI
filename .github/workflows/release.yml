@@ -26,5 +26,8 @@ jobs:
       - name: Ensure npm 11.5.1+ (trusted publishing)
         run: npm install -g npm@^11.5.1
 
-      - run: npm ci
-      - run: npm publish --access public
+      - name: Install dependencies (npm ci)
+        run: npm ci
+
+      - name: Publish to npm
+        run: npm publish --access public
