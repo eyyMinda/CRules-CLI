@@ -1,13 +1,15 @@
 {
   "name": "crules-cli",
-  "version": "1.1.8",
+  "version": "1.1.9",
   "description": "CLI to pull and push plugin configs (open plugin standard: rules, skills, agents, hooks) from your own repository",
   "main": "bin/crules.js",
   "bin": {
     "crules": "./bin/crules.js"
   },
   "scripts": {
-    "install-global": "npm install -g ."
+    "install-global": "npm install -g .",
+    "format": "prettier --write \"bin/**/*.js\" \"lib/**/*.js\"",
+    "format:check": "prettier --check \"bin/**/*.js\" \"lib/**/*.js\""
   },
   "keywords": [
     "cursor",
@@ -47,5 +49,8 @@
     "inquirer": "^8.2.7",
     "minimatch": "^10.2.4",
     "ora": "^9.3.0"
+  },
+  "devDependencies": {
+    "prettier": "^3.8.1"
   }
 }

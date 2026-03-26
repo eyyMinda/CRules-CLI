@@ -111,7 +111,10 @@ program
       // For edit command: action=edit, key=alias, value=configKey, extra=configValue
       // Or use --key and --value options
       if (action === 'edit' && (options.key || options.value)) {
-        await configCommand(action, key, options.key || value, { ...options, editValue: options.value || extra });
+        await configCommand(action, key, options.key || value, {
+          ...options,
+          editValue: options.value || extra
+        });
       } else if (action === 'edit' && extra) {
         // edit alias key value format
         await configCommand(action, key, value, { ...options, editValue: extra });
