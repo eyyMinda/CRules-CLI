@@ -100,7 +100,7 @@ End users should install via `npm install -g crules-cli` (see [README.md](README
   - `commands/` - Command handlers
   - `config.js` - Configuration management
   - `utils.js` - Shared utilities
-- `test/` - `node:test` unit tests
+- `test/` - Vitest unit tests (`npm test` → `vitest run`)
 
 ## Important Notes
 

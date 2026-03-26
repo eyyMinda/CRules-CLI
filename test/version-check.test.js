@@ -1,12 +1,16 @@
 'use strict';
 
-const { test } = require('node:test');
-const assert = require('node:assert/strict');
+import { createRequire } from 'node:module';
+import { describe, expect, it } from 'vitest';
+
+const require = createRequire(import.meta.url);
 const { compareSemverGreater } = require('../lib/version-check.js');
 
-test('compareSemverGreater', () => {
-  assert.equal(compareSemverGreater('1.2.0', '1.1.9'), true);
-  assert.equal(compareSemverGreater('1.1.9', '1.2.0'), false);
-  assert.equal(compareSemverGreater('1.0.0', '1.0.0'), false);
-  assert.equal(compareSemverGreater('2.0.0', '1.99.99'), true);
+describe('version-check', () => {
+  it('compareSemverGreater', () => {
+    expect(compareSemverGreater('1.2.0', '1.1.9')).toBe(true);
+    expect(compareSemverGreater('1.1.9', '1.2.0')).toBe(false);
+    expect(compareSemverGreater('1.0.0', '1.0.0')).toBe(false);
+    expect(compareSemverGreater('2.0.0', '1.99.99')).toBe(true);
+  });
 });

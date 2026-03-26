@@ -36,6 +36,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.1.15] - 2026-03-26
+
+### Added
+
+- Vitest for unit tests (`npm test` → `vitest run`, `npm run test:watch`).
+
+### Changed
+
+- Prettier includes `vitest.config.mjs`; CONTRIBUTING documents Vitest-based tests.
+
 ## [1.1.14] - 2026-03-26
 
 ### Fixed
