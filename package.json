@@ -1,6 +1,6 @@
 {
   "name": "crules-cli",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "CLI to pull and push plugin configs (open plugin standard: rules, skills, agents, hooks) from your own repository",
   "main": "bin/crules.js",
   "bin": {
@@ -46,14 +46,14 @@
     "CODE_OF_CONDUCT.md"
   ],
   "dependencies": {
-    "commander": "^11.1.0",
-    "diff": "^8.0.3",
-    "inquirer": "^8.2.7",
+    "commander": "^14.0.3",
+    "diff": "^9.0.0",
+    "inquirer": "^13.4.1",
     "minimatch": "^10.2.4",
     "ora": "^9.3.0"
   },
   "devDependencies": {
     "prettier": "^3.8.1",
-    "vitest": "^3.2.4"
+    "vitest": "^4.1.4"
   }
 }
