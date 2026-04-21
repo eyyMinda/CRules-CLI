@@ -36,6 +36,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.2.4] - 2026-04-21
+
+### Fixed
+
+- Updated TUI prompts to use `select` with Inquirer v13, so menu options render correctly instead of showing only prompt text.
+- Improved config and ignore navigation so Back returns to the previous menu level, and dead-end actions now offer consistent Back/Exit choices.
+- Centralized TUI navigation labels/values for Back/Exit into shared constants to simplify future updates.
+
+---
+
+## [1.2.3] - 2026-04-21
+
+### Fixed
+
+- `crules` no-argument startup now lazy-loads TUI, so prompt module issues no longer block non-TUI commands like `--version`, `status`, `pull`, or `push`.
+- Added a bin-level smoke test that validates `bin/crules.js --version` works without entering interactive prompt flow.
+- `crules config create` now retries alias input until valid, supports `cancel`, and rejects existing aliases in both direct and interactive flows.
+
+---
+
 ## [1.2.2] - 2026-04-21
 
 ### Fixed
