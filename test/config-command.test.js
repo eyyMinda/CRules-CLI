@@ -160,7 +160,7 @@ describe('configCommand', () => {
     } finally {
       console.error = origErr;
     }
-    expect(errs.some((e) => e.includes("already exists"))).toBe(true);
+    expect(errs.some((e) => e.includes('already exists'))).toBe(true);
   });
 
   it('create interactive loop retries duplicate alias then accepts valid one', async () => {
