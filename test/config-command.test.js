@@ -48,6 +48,12 @@ function writeBaseConfig() {
 }
 
 function reloadConfigModules() {
+  const utilsPath = require.resolve('../lib/utils.js');
+  delete require.cache[utilsPath];
+  const utils = require(utilsPath);
+  if (global.__testPromptUser) {
+    utils.promptUser = global.__testPromptUser;
+  }
   delete require.cache[require.resolve('../lib/config.js')];
   delete require.cache[require.resolve('../lib/commands/config.js')];
   return {
@@ -66,6 +72,7 @@ let config;
 let configCommand;
 
 beforeEach(() => {
+  global.__testPromptUser = null;
   wipeConfig();
   writeBaseConfig();
   ({ config, configCommand } = reloadConfigModules());
@@ -127,5 +134,27 @@ describe('configCommand', () => {
       console.error = orig;
     }
     expect(errs.some((e) => e.includes('Failed to switch'))).toBe(true);
+  });
+
+  it('create interactive loop retries invalid alias then accepts valid one', async () => {
+    const prompts = ['1bad', 'shopify-theme'];
+    global.__testPromptUser = async () => prompts.shift() || '';
+    ({ config, configCommand } = reloadConfigModules());
+
+    await configCommand('create', null, null, {
+      quiet: true,
+      repository: 'https://example.com/new.git'
+    });
+
+    expect(config.getConfig('shopify-theme')).toMatchObject({
+      repository: 'https://example.com/new.git'
+    });
+  });
+
+  it('create interactive loop can cancel', async () => {
+    global.__testPromptUser = async () => 'cancel';
+    ({ config, configCommand } = reloadConfigModules());
+    await configCommand('create', null, null, { quiet: true, repository: 'x' });
+    expect(config.getConfig('cancel')).toBe(null);
   });
 });
