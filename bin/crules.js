@@ -8,7 +8,6 @@ const statusCommand = require('../lib/commands/status');
 const diffCommand = require('../lib/commands/diff');
 const configCommand = require('../lib/commands/config');
 const ignoreCommand = require('../lib/commands/ignore');
-const runTUI = require('../lib/commands/tui');
 const { maybePrintUpdateNotice } = require('../lib/version-check');
 
 const program = new Command();
@@ -138,6 +137,7 @@ const skipUpdateNotice =
   if (args.length === 0) {
     await maybePrintUpdateNotice({ quiet: false });
     try {
+      const runTUI = require('../lib/commands/tui');
       await runTUI();
     } catch (err) {
       console.error(err.message || err);
