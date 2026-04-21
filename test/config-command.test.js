@@ -151,6 +151,26 @@ describe('configCommand', () => {
     });
   });
 
+  it('create rejects duplicate alias passed directly', async () => {
+    const errs = [];
+    const origErr = console.error;
+    console.error = (...a) => errs.push(a.join(' '));
+    try {
+      await configCommand('create', 'default', null, { quiet: true });
+    } finally {
+      console.error = origErr;
+    }
+    expect(errs.some((e) => e.includes("already exists"))).toBe(true);
+  });
+
+  it('create interactive loop retries duplicate alias then accepts valid one', async () => {
+    const prompts = ['default', 'shopify-theme'];
+    global.__testPromptUser = async () => prompts.shift() || '';
+    ({ config, configCommand } = reloadConfigModules());
+    await configCommand('create', null, null, { quiet: true, repository: 'x' });
+    expect(config.getConfig('shopify-theme')).toMatchObject({ repository: 'x' });
+  });
+
   it('create interactive loop can cancel', async () => {
     global.__testPromptUser = async () => 'cancel';
     ({ config, configCommand } = reloadConfigModules());
