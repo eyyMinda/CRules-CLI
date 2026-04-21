@@ -36,6 +36,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.2.6] - 2026-04-21
+
+### Changed
+
+- Cache model now uses alias folder mirrors for selected `sourcePath` contents, with hidden `.crules-git` metadata kept inside each alias cache directory.
+- Push/status/sync flows now operate against hidden git metadata while keeping project-facing cache folders clean.
+- README cache structure docs now include nested `skills/.../SKILL.md` examples aligned with the new cache model.
+
+### Fixed
+
+- Pull/sync now explicitly excludes `.crules-git` from copied project files, including regression coverage to prevent metadata leakage.
+- On Windows, `.crules-git` now gets hidden attribute assignment as best-effort behavior.
+
+---
+
 ## [1.2.5] - 2026-04-21
 
 ### Fixed
