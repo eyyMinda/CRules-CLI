@@ -36,6 +36,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.2.5] - 2026-04-21
+
+### Fixed
+
+- `ensureCache()` retry path now reuses a shared cache-sync routine instead of duplicating fetch/reset/clean logic.
+- TUI `pull` now offers a two-step force confirmation flow when local modified files block a normal pull.
+- TUI config menu now includes "View current config settings" and supports global/local scope from the menu.
+
+### Changed
+
+- Interactive command docs now reflect the current TUI ordering, back-navigation semantics, and force flow behavior.
+
+---
+
 ## [1.2.4] - 2026-04-21
 
 ### Fixed

@@ -109,15 +109,20 @@ Run without a subcommand to open an interactive menu:
 crules
 ```
 
+- **Status** – See what's different
 - **Pull** – Get latest from repository
 - **Push** – Push local changes
-- **Status** – See what's different
 - **Diff** – View diff for a file (prompts for path)
-- **Config** – List, get, set, or switch configs
+- **Config** – View current config, list/get/set, create, or switch configs (global/local scope)
 - **Ignore** – List, add, or remove ignore patterns
 - **Exit** – Quit
 
-After each action you can return to the menu. Use `crules -h` for non-interactive help.
+Navigation notes:
+- Back always returns to the previous menu level.
+- Dead-end actions show `Back` / `Exit` choices in TUI.
+- Pull in TUI now offers a force-retry flow when local changes would be overwritten.
+
+Use `crules -h` for non-interactive help.
 
 ### `crules pull`
 
@@ -133,7 +138,7 @@ crules pull [options]
 - `-q, --quiet` - Suppress non-error output
 - `-f, --force` - Overwrite locally modified files
 - `--dry-run` - Preview changes without applying them
-- `--no-cache-update` - Skip git pull in cache, use existing cache only
+- `--no-cache-update` - Skip cache fetch/reset sync, use existing cache only
 
 **Examples:**
 
