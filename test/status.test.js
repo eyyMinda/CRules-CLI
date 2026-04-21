@@ -45,7 +45,7 @@ const utils = require('../lib/utils.js');
 const { getStatus } = require('../lib/commands/status.js');
 
 const projCursor = path.join(tmpProject, '.cursor');
-const cacheCursor = path.join(tmpCache, '.cursor');
+const cacheCursor = tmpCache;
 
 function wipeCursorTrees() {
   for (const root of [projCursor, cacheCursor]) {

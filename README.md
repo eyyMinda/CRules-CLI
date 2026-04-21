@@ -109,15 +109,21 @@ Run without a subcommand to open an interactive menu:
 crules
 ```
 
+- **Status** – See what's different
 - **Pull** – Get latest from repository
 - **Push** – Push local changes
-- **Status** – See what's different
 - **Diff** – View diff for a file (prompts for path)
-- **Config** – List, get, set, or switch configs
+- **Config** – View current config, list/get/set, create, or switch configs (global/local scope)
 - **Ignore** – List, add, or remove ignore patterns
 - **Exit** – Quit
 
-After each action you can return to the menu. Use `crules -h` for non-interactive help.
+Navigation notes:
+
+- Back always returns to the previous menu level.
+- Dead-end actions show `Back` / `Exit` choices in TUI.
+- Pull in TUI now offers a force-retry flow when local changes would be overwritten.
+
+Use `crules -h` for non-interactive help.
 
 ### `crules pull`
 
@@ -133,7 +139,7 @@ crules pull [options]
 - `-q, --quiet` - Suppress non-error output
 - `-f, --force` - Overwrite locally modified files
 - `--dry-run` - Preview changes without applying them
-- `--no-cache-update` - Skip git pull in cache, use existing cache only
+- `--no-cache-update` - Skip cache fetch/reset sync, use existing cache only
 
 **Examples:**
 
@@ -142,15 +148,15 @@ crules pull
 crules pull --verbose
 crules pull --force         # Overwrite local changes
 crules pull --dry-run       # Preview what would change
-crules pull --no-cache-update  # Use cached repo without fetching
+crules pull --no-cache-update  # Use existing alias cache mirror
 crules pull -q              # Quiet mode for scripts
 ```
 
 **What it does:**
 
 - Fails if you have locally modified files (use `--force` to overwrite)
-- Updates the cached repository (unless `--no-cache-update`)
-- Copies `.cursor` folder to your project
+- Updates alias cache metadata and mirror contents (unless `--no-cache-update`)
+- Copies mirrored `sourcePath` contents into your project `targetPath`
 - Preserves project-specific files (files matching the configured pattern)
 - Respects ignore list (excluded files are not copied)
 
@@ -374,7 +380,7 @@ You can create multiple config profiles with aliases to manage different cursor 
 - **Default config**: No alias required, always available
 - **Named configs**: Must have an alias (e.g., `shopify-theme`, `react`, `shopify-app`)
 - **Active config**: The currently selected config used by pull/push/status/diff commands
-- **Cache isolation**: Each config has its own cache directory
+- **Cache isolation**: Each config has its own cache directory mirror
 
 **Example workflow:**
 
@@ -435,14 +441,14 @@ my-plugin/
 
 Project-specific file preservation (files matching `projectSpecificPattern`) works for:
 
-| Folder | Purpose |
-|--------|---------|
-| `rules/` | Coding standards (.mdc files) |
-| `commands/` | Custom commands |
-| `docs/` | Documentation |
-| `skills/` | Agent skills (SKILL.md format) |
-| `agents/` | Specialized sub-agents |
-| `hooks/` | Event-driven automation |
+| Folder      | Purpose                        |
+| ----------- | ------------------------------ |
+| `rules/`    | Coding standards (.mdc files)  |
+| `commands/` | Custom commands                |
+| `docs/`     | Documentation                  |
+| `skills/`   | Agent skills (SKILL.md format) |
+| `agents/`   | Specialized sub-agents         |
+| `hooks/`    | Event-driven automation        |
 
 All folders are synced recursively. Project-specific files are preserved during pull and excluded from push.
 
@@ -451,11 +457,22 @@ All folders are synced recursively. Project-specific files are preserved during 
 **Config location:** `~/.crules-cli/.crules-cli-config.json`
 
 **Directory structure:**
+
 ```
 ~/.crules-cli/
 ├── .crules-cli-config.json   # All configs + active alias
-├── default/                  # Cache for default config
-└── {alias}/                  # Cache per named config (e.g. nextjs/)
+├── default/                  # Mirrored sourcePath contents for default config
+│   ├── .crules-git/          # Hidden git metadata/worktree used for push/status
+│   ├── skills/
+│   │   └── project-bump-version/
+│   │       └── SKILL.md      # Example mirrored skill file
+│   └── ...                   # Other mirrored files/folders
+└── {alias}/                  # Mirrored sourcePath contents for named config
+    ├── .crules-git/          # Hidden git metadata/worktree for this alias
+    ├── skills/
+    │   └── commit/
+    │       └── SKILL.md      # Example mirrored skill file
+    └── ...                   # Other mirrored files/folders
 ```
 
 **Config format:**
@@ -493,8 +510,8 @@ All folders are synced recursively. Project-specific files are preserved during 
 **Per-Config Options:**
 
 - **repository** (required): Git repository URL. Must be configured before using any commands.
-- **cacheDir**: Cache directory for this config. Defaults to `~/.crules-cli/{alias}`.
-- **sourcePath**: Path within the cached repo to sync from (default: `.cursor`). Use `.` or `` for plugin root.
+- **cacheDir**: Alias cache directory. It stores a mirror of selected `sourcePath` contents plus hidden `.crules-git` metadata. Defaults to `~/.crules-cli/{alias}`.
+- **sourcePath**: Path in the remote repository to mirror into `cacheDir` (default: `.cursor`). Use `.` for plugin root.
 - **targetPath**: Path in the project to sync to (default: `.cursor`). Use `.` for project root.
 - **projectSpecificPattern**: Regex pattern to identify project-specific files
 - **commitMessage**: Commit message template (use `{summary}` placeholder)
