@@ -136,13 +136,15 @@ describe('getStatus', () => {
     expect(s.outdated.map(norm)).toContain('rules/same.mdc');
   });
 
-  it('skips project-specific basename pattern', async () => {
+  it('skips project-specific files by basename and path segment', async () => {
     writeFile(path.join(projCursor, 'rules/project-local.mdc'), 'x');
+    writeFile(path.join(projCursor, 'skills/project-local/SKILL.md'), 'x');
     writeFile(path.join(projCursor, 'rules/normal.mdc'), 'a');
     writeFile(path.join(cacheCursor, 'rules/normal.mdc'), 'b');
 
     const s = await getStatus();
     expect(s.added).not.toContain('rules/project-local.mdc');
+    expect(s.added).not.toContain('skills/project-local/SKILL.md');
     expect(s.modified).not.toContain('rules/project-local.mdc');
     expect(s.modified.map(norm)).toContain('rules/normal.mdc');
   });
