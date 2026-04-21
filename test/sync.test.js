@@ -126,4 +126,19 @@ describe('syncCommand (pull)', () => {
     await syncCommand({ quiet: true, force: true });
     expect(fs.existsSync(path.join(destRoot, 'rules', 'a.mdc'))).toBe(true);
   });
+
+  it('never copies hidden .crules-git metadata into project target', async () => {
+    const srcRoot = path.join(tmpProject, 'cache-src', '.cursor');
+    const destRoot = path.join(tmpProject, '.cursor');
+    fs.mkdirSync(path.join(srcRoot, '.crules-git'), { recursive: true });
+    fs.writeFileSync(path.join(srcRoot, '.crules-git', 'HEAD'), 'ref: refs/heads/main\n', 'utf8');
+    fs.mkdirSync(path.join(srcRoot, 'rules'), { recursive: true });
+    fs.writeFileSync(path.join(srcRoot, 'rules', 'a.mdc'), 'x', 'utf8');
+    fs.mkdirSync(destRoot, { recursive: true });
+
+    await syncCommand({ quiet: true, force: true });
+
+    expect(fs.existsSync(path.join(destRoot, 'rules', 'a.mdc'))).toBe(true);
+    expect(fs.existsSync(path.join(destRoot, '.crules-git'))).toBe(false);
+  });
 });
