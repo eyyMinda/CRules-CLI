@@ -36,6 +36,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.2.2] - 2026-04-21
+
+### Fixed
+
+- `crules config create` now prompts for alias when missing, then continues interactive setup without hanging behind a loader spinner.
+- `crules` interactive menu now supports both `inquirer.prompt` and `inquirer.default.prompt`, preventing startup crashes on newer inquirer export shapes.
+- project-specific matching now correctly handles nested paths (such as `skills/project-*/SKILL.md`) and avoids `EISDIR` failures during pull backups.
+
+---
+
 ## [1.2.1] - 2026-04-15
 
 ### Changed
